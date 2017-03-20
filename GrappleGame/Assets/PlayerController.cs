@@ -5,9 +5,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
+	public Text levelComplete; // this text box is used only for the prototype demo
 	private float moveSpeed;
 	private Vector3 jumpHeight;
 	private Vector3 slideHeight;
@@ -29,6 +32,7 @@ public class PlayerController : MonoBehaviour
 		isWallSliding = false;
 		currentHeight = gameObject.transform.position.y;
 		oldHeight = currentHeight;
+		levelComplete.text = "";
 	}
 
 	void Update ()
@@ -73,6 +77,11 @@ public class PlayerController : MonoBehaviour
 			isWallSliding = true;
 			Debug.Log ("Wall Slide");
 		}
+		if (other.gameObject.name == "Finish Flag") {
+			levelComplete.text = "Level Complete";
+			other.gameObject.GetComponent<BoxCollider2D> ().enabled = false;
+			StartCoroutine ("Restart");
+		}
 	}
 
 	void OnCollisionStay2D (Collision2D other)
@@ -93,5 +102,10 @@ public class PlayerController : MonoBehaviour
 			isWallJumping = true;
 			Debug.Log ("Wall Jump");
 		}
+	}
+
+	IEnumerator Restart(){
+		yield return new WaitForSeconds (2);
+		SceneManager.LoadScene ("Player Movement Prototype");
 	}
 }

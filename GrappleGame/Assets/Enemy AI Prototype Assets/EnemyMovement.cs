@@ -31,11 +31,14 @@ public class EnemyMovement : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        checkPlayerDist();
-
-        if (state == 1)
+        if (state == 0)
+        {
+            checkPlayerDist();
+        }
+        else if (state == 1)
         {
             facePlayer();
+            checkPlayerDist();
 
             if (cooldown <= 0.0f)
             {
@@ -62,6 +65,17 @@ public class EnemyMovement : MonoBehaviour
         if(other.gameObject.tag == "PlatformEdge")
         {
             flip();
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if(other.gameObject.tag == "Player")
+        {
+            state = 2;
+            player = null;
+            playerT = null;
+            Destroy(other.gameObject);
         }
     }
 

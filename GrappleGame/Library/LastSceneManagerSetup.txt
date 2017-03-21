@@ -1,4 +1,0 @@
-sceneSetups:
-- path: Assets/HookPrototype.unity
-  isLoaded: 1
-  isActive: 1

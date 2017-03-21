@@ -5,6 +5,8 @@ public class GrappleInputManager : MonoBehaviour {
 	
 	GrappleScript grapple;
 	public Camera cam;
+	public LayerMask mask = ~(1 << 9);
+
 
 	public float angleStep = 1;
 	/* The angle around the target that the rope can attach to
@@ -29,27 +31,32 @@ public class GrappleInputManager : MonoBehaviour {
 			// Find mouse position
 			Vector3 mouseInput = new Vector3(Input.mousePosition.x,Input.mousePosition.y,10);
 			Vector2 mouseClick = cam.ScreenToWorldPoint(mouseInput);
+			//GameObject.FindGameObjectWithTag("Player Body").GetComponent<HingeJoint2D>().
 			
 			// Find ray direction and raycast
 			Vector2 rayDirection = mouseClick - (Vector2)this.transform.position;
-			RaycastHit2D hit = Physics2D.Raycast((Vector2)this.transform.position , rayDirection , grapple.grapplingHookRange, ~(1<<grapple.playerLayer));
+			RaycastHit2D hit = Physics2D.Raycast((Vector2)this.transform.position , rayDirection , grapple.grapplingHookRange, mask);
 			float angle = angleStep;
 			Quaternion rot;
+
+			//Physics2D.IgnoreLayerCollision (GameObject.fin, hit.collider);
 
 			// If the raycast does not hit anything, loop raycast until object is hit
 			while(hit.collider == null && angle<angleTolerance)
 			{
 				rot = Quaternion.AngleAxis(angle , Vector3.forward);
-				hit = Physics2D.Raycast((Vector2)this.transform.position , rot*rayDirection, grapple.grapplingHookRange, ~(1<<grapple.playerLayer));
+				hit = Physics2D.Raycast((Vector2)this.transform.position , rot*rayDirection, grapple.grapplingHookRange, mask);
 				
 				if(hit.collider!=null)
 					break;
 				
 				rot = Quaternion.AngleAxis(-angle , Vector3.forward);
-				hit = Physics2D.Raycast((Vector2)this.transform.position , rot*rayDirection, grapple.grapplingHookRange, ~(1<<grapple.playerLayer));
+				hit = Physics2D.Raycast((Vector2)this.transform.position , rot*rayDirection, grapple.grapplingHookRange, mask);
 				angle+=angleStep;
 				
 			}
+
+				
 			// if something is hit, and that is not the player
 			if(hit.collider != null && hit.collider.gameObject.layer != grapple.playerLayer )
 			{

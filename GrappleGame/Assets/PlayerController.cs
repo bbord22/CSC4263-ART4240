@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-	public Text levelComplete; // this text box is used only for the prototype demo
+	//public Text levelComplete; // this text box is used only for the prototype demo
 	private float moveSpeed;
 	private Vector3 jumpHeight;
 	private Vector3 slideHeight;
@@ -23,24 +23,25 @@ public class PlayerController : MonoBehaviour
 
 	void Start ()
 	{
+		Physics.defaultSolverIterations = 10;
 		rb = gameObject.GetComponent<Rigidbody2D> ();
-		jumpHeight = new Vector3 (0f, 10f, 0f);
-		slideHeight = new Vector3 (0f, 10f, 0f);
-		moveSpeed = 5f;
+		jumpHeight = new Vector3 (0f, 12f, 0f);
+		slideHeight = new Vector3 (0f, 8f, 0f);
+		moveSpeed = 7f;
 		canJump = true;
 		isWallJumping = false;
 		isWallSliding = false;
 		currentHeight = gameObject.transform.position.y;
 		oldHeight = currentHeight;
-		levelComplete.text = "";
+	//	levelComplete.text = "";
 	}
 
 	void Update ()
 	{
 		if (isWallJumping == true) {
-			moveSpeed = 4f; // affects the distance that the player can jump from a wall
+			moveSpeed = 5f; // affects the distance that the player can jump from a wall
 		} else {
-			moveSpeed = 5f; // affects the speed that the player moves around
+			moveSpeed = 7f; // affects the speed that the player moves around
 		}
 		transform.rotation = Quaternion.Euler (0, 0, 0); // stops rotation
 		if (Input.GetKey ("a")) {
@@ -78,7 +79,7 @@ public class PlayerController : MonoBehaviour
 			Debug.Log ("Wall Slide");
 		}
 		if (other.gameObject.name == "Finish Flag") {
-			levelComplete.text = "Level Complete";
+		//	levelComplete.text = "Level Complete";
 			other.gameObject.GetComponent<BoxCollider2D> ().enabled = false;
 			StartCoroutine ("Restart");
 		}

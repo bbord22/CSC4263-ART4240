@@ -20,7 +20,7 @@ public class EnemyMovement : MonoBehaviour
     {
         rigidBody = GetComponent<Rigidbody2D>();
         facing = 1;
-        maxSpeed = 5f;
+        maxSpeed = 3f;
         state = 0;
         dashTime = 0.0f;
         cooldown = 0.0f;
@@ -68,7 +68,7 @@ public class EnemyMovement : MonoBehaviour
     void dash()
     {
         Debug.Log("Dashing");
-        rigidBody.AddForce(new Vector2(facing * 300f * 4, 0));
+        rigidBody.AddForce(new Vector2(facing * 200f * 4, 0));
         cooldown = cooldownTime;
         dashTime = .5f;
     }

@@ -25,9 +25,12 @@ public class PlayerController : MonoBehaviour
 	{
 		Physics.defaultSolverIterations = 10;
 		rb = gameObject.GetComponent<Rigidbody2D> ();
-		jumpHeight = new Vector3 (0f, 12f, 0f);
-		slideHeight = new Vector3 (0f, 8f, 0f);
-		moveSpeed = 7f;
+		//jumpHeight = new Vector3 (0f, 12f, 0f);
+		jumpHeight = new Vector3 (0f, 15f, 0f);
+		//slideHeight = new Vector3 (0f, 8f, 0f);
+		slideHeight = new Vector3 (0f, 12f, 0f);
+		//moveSpeed = 7f;
+		moveSpeed = 9f;
 		canJump = true;
 		isWallJumping = false;
 		isWallSliding = false;
@@ -39,9 +42,11 @@ public class PlayerController : MonoBehaviour
 	void Update ()
 	{
 		if (isWallJumping == true) {
-			moveSpeed = 5f; // affects the distance that the player can jump from a wall
+			//moveSpeed = 5f; // affects the distance that the player can jump from a wall
+			moveSpeed = 7f;
 		} else {
-			moveSpeed = 7f; // affects the speed that the player moves around
+			//moveSpeed = 7f; // affects the speed that the player moves around
+			moveSpeed = 9f;
 		}
 		transform.rotation = Quaternion.Euler (0, 0, 0); // stops rotation
 		if (Input.GetKey ("a")) {
@@ -107,6 +112,7 @@ public class PlayerController : MonoBehaviour
 
 	IEnumerator Restart(){
 		yield return new WaitForSeconds (2);
-		SceneManager.LoadScene ("Player Movement Prototype");
+		//SceneManager.LoadScene ("Player Movement Prototype");
+		SceneManager.LoadScene ("Mashup");
 	}
 }

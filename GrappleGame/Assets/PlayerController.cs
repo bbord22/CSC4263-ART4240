@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
 	//	levelComplete.text = "";
 	}
 
-	void Update ()
+	void FixedUpdate ()
 	{
 		if (isWallJumping == true) {
 			//moveSpeed = 5f; // affects the distance that the player can jump from a wall

@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
 		Physics.defaultSolverIterations = 10;
 		rb = gameObject.GetComponent<Rigidbody2D> ();
 		//jumpHeight = new Vector3 (0f, 12f, 0f);
-		jumpHeight = new Vector3 (0f, 15f, 0f);
+		jumpHeight = new Vector3 (0f, 27f, 0f);
 		//slideHeight = new Vector3 (0f, 8f, 0f);
 		slideHeight = new Vector3 (0f, 12f, 0f);
 		//moveSpeed = 7f;
@@ -60,9 +60,9 @@ public class PlayerController : MonoBehaviour
 			canJump = false;
 		}
 		currentHeight = gameObject.transform.position.y; // did this so the jump won't look floaty
-		if (currentHeight < oldHeight) { // if player is falling gravity is less
-			rb.gravityScale = 1;
-		} else { // if player is jumping gravity is more
+		if (currentHeight < oldHeight) { // if player is falling gravity is more
+			rb.gravityScale = 3;
+		} else { // if player is jumping gravity is less
 			rb.gravityScale = 2;
 		}
 		oldHeight = currentHeight;

@@ -71,7 +71,7 @@ public class ShooterAI : MonoBehaviour
 
     void shoot()
     {
-        Instantiate(bullet, transform.position, Quaternion.identity);
+        Instantiate(bullet, transform.position, transform.rotation);
         cooldownTimer = shootCooldown;
     }
 

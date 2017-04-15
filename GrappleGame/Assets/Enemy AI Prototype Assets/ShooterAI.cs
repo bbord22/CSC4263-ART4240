@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyMovement : MonoBehaviour
+public class ShooterAI : MonoBehaviour
 {
     private int facing;
     private float maxSpeed;
@@ -15,8 +15,9 @@ public class EnemyMovement : MonoBehaviour
     private float dashTime;
     public float AggroRadius;
     public float cooldownTime;
+    public GameObject bullet;
 
-    void Start ()
+    void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
         facing = 1;
@@ -27,9 +28,9 @@ public class EnemyMovement : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         playerT = player.transform;
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
         if (state == 0)
         {
@@ -46,15 +47,16 @@ public class EnemyMovement : MonoBehaviour
             }
         }
 
-        if(cooldown > 0.0f)
+        if (cooldown > 0.0f)
         {
             cooldown -= Time.deltaTime;
         }
 
-        if(dashTime > 0.0f)
+        if (dashTime > 0.0f)
         {
             dashTime -= Time.deltaTime;
-        } else
+        }
+        else
         {
             rigidBody.velocity = new Vector2(facing * maxSpeed, rigidBody.velocity.y);
         }
@@ -62,7 +64,7 @@ public class EnemyMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.gameObject.tag == "PlatformEdge")
+        if (other.gameObject.tag == "PlatformEdge")
         {
             flip();
         }
@@ -70,7 +72,7 @@ public class EnemyMovement : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        if(other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player")
         {
             state = 2;
             player = null;
@@ -92,7 +94,8 @@ public class EnemyMovement : MonoBehaviour
         if (transform.position.x < playerT.position.x && facing == -1)
         {
             flip();
-        } else if (transform.position.x > playerT.position.x && facing == 1)
+        }
+        else if (transform.position.x > playerT.position.x && facing == 1)
         {
             flip();
         }
@@ -102,10 +105,11 @@ public class EnemyMovement : MonoBehaviour
     {
         distFromPlayer = Vector2.Distance(playerT.position, transform.position);
 
-        if(distFromPlayer < AggroRadius)
+        if (distFromPlayer < AggroRadius)
         {
             state = 1;
-        } else
+        }
+        else
         {
             state = 0;
         }

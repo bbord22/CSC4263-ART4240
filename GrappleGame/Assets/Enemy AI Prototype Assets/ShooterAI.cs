@@ -5,60 +5,48 @@ using UnityEngine;
 public class ShooterAI : MonoBehaviour
 {
     private int facing;
-    private float maxSpeed;
     private Rigidbody2D rigidBody;
     private int state;
     private GameObject player;
     private Transform playerT;
+    private float cooldownTimer;
     private float distFromPlayer;
-    private float cooldown;
-    private float dashTime;
     public float AggroRadius;
-    public float cooldownTime;
+    public float maxSpeed;
+    public float shootCooldown;
     public GameObject bullet;
 
     void Start()
     {
-        rigidBody = GetComponent<Rigidbody2D>();
         facing = 1;
-        maxSpeed = 3f;
+        rigidBody = gameObject.GetComponent<Rigidbody2D>();
         state = 0;
-        dashTime = 0.0f;
-        cooldown = 0.0f;
         player = GameObject.FindGameObjectWithTag("Player");
-        playerT = player.transform;
+        playerT = player.GetComponent<Transform>();
+        cooldownTimer = 0;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (state == 0)
-        {
-            checkPlayerDist();
-        }
-        else if (state == 1)
+        checkPlayerDist();
+
+        if (state == 1)
         {
             facePlayer();
-            checkPlayerDist();
 
-            if (cooldown <= 0.0f)
+            if(cooldownTimer <= 0)
             {
-                dash();
+                shoot();
             }
-        }
-
-        if (cooldown > 0.0f)
-        {
-            cooldown -= Time.deltaTime;
-        }
-
-        if (dashTime > 0.0f)
-        {
-            dashTime -= Time.deltaTime;
         }
         else
         {
             rigidBody.velocity = new Vector2(facing * maxSpeed, rigidBody.velocity.y);
+        }
+
+        if (cooldownTimer > 0)
+        {
+            cooldownTimer -= Time.deltaTime;
         }
     }
 
@@ -81,12 +69,10 @@ public class ShooterAI : MonoBehaviour
         }
     }
 
-    void dash()
+    void shoot()
     {
-        Debug.Log("Dashing");
-        rigidBody.AddForce(new Vector2(facing * 200f * 4, 0));
-        cooldown = cooldownTime;
-        dashTime = .5f;
+        Instantiate(bullet, transform.position, Quaternion.identity);
+        cooldownTimer = shootCooldown;
     }
 
     void facePlayer()

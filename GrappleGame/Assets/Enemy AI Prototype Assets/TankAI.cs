@@ -2,53 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShooterAI : MonoBehaviour
-{
-    private int facing;
-    private Rigidbody2D rigidBody;
+public class TankAI : MonoBehaviour {
     private int state;
+    private int facing;
     private GameObject player;
     private Transform playerT;
-    private float cooldownTimer;
     private float distFromPlayer;
+    private Rigidbody2D rigidBody;
     public float AggroRadius;
     public float maxSpeed;
-    public float shootCooldown;
-    public GameObject bullet;
 
-    void Start()
-    {
-        facing = 1;
-        rigidBody = gameObject.GetComponent<Rigidbody2D>();
+	void Start () {
         state = 0;
+        facing = 0;
         player = GameObject.FindGameObjectWithTag("Player");
-        playerT = player.GetComponent<Transform>();
-        cooldownTimer = 0;
-    }
-
-    void Update()
-    {
+        playerT = player.transform;
+        rigidBody = GetComponent<Rigidbody2D>();
+	}
+	
+	void Update () {
         checkPlayerDist();
 
         if (state == 1)
         {
             facePlayer();
-
-            if(cooldownTimer <= 0)
-            {
-                shoot();
-            }
-
             rigidBody.velocity = new Vector2(0, 0);
         }
         else
         {
             rigidBody.velocity = new Vector2(facing * maxSpeed, rigidBody.velocity.y);
-        }
-
-        if (cooldownTimer > 0)
-        {
-            cooldownTimer -= Time.deltaTime;
         }
     }
 
@@ -69,12 +51,6 @@ public class ShooterAI : MonoBehaviour
             playerT = null;
             Destroy(other.gameObject);
         }
-    }
-
-    void shoot()
-    {
-        
-        cooldownTimer = shootCooldown;
     }
 
     void facePlayer()

@@ -14,7 +14,6 @@ public class BulletScript : MonoBehaviour {
         target = player.transform;
         rb2d = GetComponent<Rigidbody2D>();
         targetVector = target.position;
-        rotateTowardsPlayer();
 	}
 	
 	void Update () {
@@ -27,14 +26,9 @@ public class BulletScript : MonoBehaviour {
         }
 	}
 
-    void rotateTowardsPlayer()
-    {
-
-    }
-
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag.Equals("Player"))
+        if (other.gameObject.tag.Equals("Player") && !other.gameObject.tag.Equals("Enemy"))
         {
             Destroy(other.gameObject);
         }

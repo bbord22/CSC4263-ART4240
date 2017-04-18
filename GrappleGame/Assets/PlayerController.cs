@@ -10,8 +10,8 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-	//public Text levelComplete; // this text box is used only for the prototype demo
 	private float moveSpeed;
+	private float runSlideSpeed;
 	private Vector3 jumpHeight;
 	private Vector3 slideHeight;
 	private Rigidbody2D rb;
@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
 	private bool isWallSliding;
 	private float oldHeight;
 	private float currentHeight;
+	private bool runningLeft;
+	private bool runningRight;
 
 	void Start ()
 	{
@@ -31,12 +33,14 @@ public class PlayerController : MonoBehaviour
 		slideHeight = new Vector3 (0f, 12f, 0f);
 		//moveSpeed = 7f;
 		moveSpeed = 9f;
+		runSlideSpeed = 4f;
 		canJump = true;
 		isWallJumping = false;
 		isWallSliding = false;
+		runningLeft = false;
+		runningRight = false;
 		currentHeight = gameObject.transform.position.y;
 		oldHeight = currentHeight;
-	//	levelComplete.text = "";
 	}
 
 	void FixedUpdate ()
@@ -50,10 +54,21 @@ public class PlayerController : MonoBehaviour
 		}
 		transform.rotation = Quaternion.Euler (0, 0, 0); // stops rotation
 		if (Input.GetKey ("a")) {
-			transform.Translate (Vector3.left * moveSpeed * Time.deltaTime); // move to the left
+			if (runningRight == false) {
+				transform.Translate (Vector3.left * moveSpeed * Time.deltaTime); // move to the left
+				runningLeft = true;
+			} else {
+				StartCoroutine ("SlideRight"); // slide to the right before moving left
+			}
 		}
+
 		if (Input.GetKey ("d")) {
-			transform.Translate (Vector3.right * moveSpeed * Time.deltaTime); // move to the right
+			if (runningLeft == false) {
+				transform.Translate (Vector3.right * moveSpeed * Time.deltaTime); // move to the right
+				runningRight = true;
+			} else {
+				StartCoroutine ("SlideLeft"); // slide to the left before moving right
+			}
 		}
 		if (Input.GetKey ("w") && canJump == true) {
 			rb.AddForce (jumpHeight, ForceMode2D.Impulse); // jump
@@ -66,6 +81,18 @@ public class PlayerController : MonoBehaviour
 			rb.gravityScale = 2;
 		}
 		oldHeight = currentHeight;
+	}
+
+	IEnumerator SlideRight(){
+		transform.Translate (Vector3.right * runSlideSpeed * Time.deltaTime); // slide to the right a little
+		yield return new WaitForSeconds (0.5f); // delay left movement
+		runningRight = false;
+	}
+
+	IEnumerator SlideLeft(){
+		transform.Translate (Vector3.left * runSlideSpeed * Time.deltaTime); // slide to the left a little
+		yield return new WaitForSeconds (0.5f); // delay right movement
+		runningLeft = false;
 	}
 
 	void OnCollisionEnter2D (Collision2D other)
@@ -84,7 +111,6 @@ public class PlayerController : MonoBehaviour
 			Debug.Log ("Wall Slide");
 		}
 		if (other.gameObject.name == "Finish Flag") {
-		//	levelComplete.text = "Level Complete";
 			other.gameObject.GetComponent<BoxCollider2D> ().enabled = false;
 			StartCoroutine ("Restart");
 		}

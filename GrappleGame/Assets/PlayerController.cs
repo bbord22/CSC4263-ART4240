@@ -22,16 +22,14 @@ public class PlayerController : MonoBehaviour
 	private float currentHeight;
 	private bool runningLeft;
 	private bool runningRight;
+	private double idleTime;
 
 	void Start ()
 	{
 		Physics.defaultSolverIterations = 10;
 		rb = gameObject.GetComponent<Rigidbody2D> ();
-		//jumpHeight = new Vector3 (0f, 12f, 0f);
 		jumpHeight = new Vector3 (0f, 27f, 0f);
-		//slideHeight = new Vector3 (0f, 8f, 0f);
 		slideHeight = new Vector3 (0f, 12f, 0f);
-		//moveSpeed = 7f;
 		moveSpeed = 9f;
 		runSlideSpeed = 4f;
 		canJump = true;
@@ -41,16 +39,20 @@ public class PlayerController : MonoBehaviour
 		runningRight = false;
 		currentHeight = gameObject.transform.position.y;
 		oldHeight = currentHeight;
+		idleTime = 0.35; // amount of standing still time (in seconds) that must pass before the player is considered idle
 	}
 
 	void FixedUpdate ()
 	{
 		if (isWallJumping == true) {
-			//moveSpeed = 5f; // affects the distance that the player can jump from a wall
-			moveSpeed = 7f;
+			moveSpeed = 7f; // affects the distance that the player can jump from a wall
 		} else {
-			//moveSpeed = 7f; // affects the speed that the player moves around
-			moveSpeed = 9f;
+			moveSpeed = 9f; // affects the speed that the player moves around
+		}
+		if (Time.time >= idleTime) { // did this so the player won't slide while running after standing still for 0.35 seconds
+			Debug.Log ("Player is idle");
+			runningLeft = false; 
+			runningRight = false;
 		}
 		transform.rotation = Quaternion.Euler (0, 0, 0); // stops rotation
 		if (Input.GetKey ("a")) {
@@ -60,6 +62,7 @@ public class PlayerController : MonoBehaviour
 			} else {
 				StartCoroutine ("SlideRight"); // slide to the right before moving left
 			}
+			idleTime = Time.time + 0.35; // resets the idle time
 		}
 
 		if (Input.GetKey ("d")) {
@@ -69,6 +72,7 @@ public class PlayerController : MonoBehaviour
 			} else {
 				StartCoroutine ("SlideLeft"); // slide to the left before moving right
 			}
+			idleTime = Time.time + 0.35; // resets the idle time
 		}
 		if (Input.GetKey ("w") && canJump == true) {
 			rb.AddForce (jumpHeight, ForceMode2D.Impulse); // jump
@@ -138,7 +142,6 @@ public class PlayerController : MonoBehaviour
 
 	IEnumerator Restart(){
 		yield return new WaitForSeconds (2);
-		//SceneManager.LoadScene ("Player Movement Prototype");
 		SceneManager.LoadScene ("Mashup");
 	}
 }

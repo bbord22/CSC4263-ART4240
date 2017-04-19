@@ -22,7 +22,19 @@ public class PlayerController : MonoBehaviour
 	private float currentHeight;
 	private bool runningLeft;
 	private bool runningRight;
-	private double idleTime;
+	private bool stationary;
+	private bool isTouchingGround;
+
+	public float _Velocity;    // Current Travelling Velocity
+	public float _MaxVelocity;  // Maxima Velocity
+	public float _Acc;    // Current Acceleration
+	public float _AccSpeed;   // Amount to increase Acceleration with.
+	public float _MaxAcc;     // Max Acceleration
+	public float _MinAcc;      // Min Acceleration
+
+	private bool zeroVelocity;
+
+	//private double idleTime;
 
 	void Start ()
 	{
@@ -31,7 +43,7 @@ public class PlayerController : MonoBehaviour
 		jumpHeight = new Vector3 (0f, 27f, 0f);
 		slideHeight = new Vector3 (0f, 12f, 0f);
 		moveSpeed = 9f;
-		runSlideSpeed = 4f;
+		runSlideSpeed = 6f;
 		canJump = true;
 		isWallJumping = false;
 		isWallSliding = false;
@@ -39,7 +51,6 @@ public class PlayerController : MonoBehaviour
 		runningRight = false;
 		currentHeight = gameObject.transform.position.y;
 		oldHeight = currentHeight;
-		idleTime = 0.35; // amount of standing still time (in seconds) that must pass before the player is considered idle
 	}
 
 	void FixedUpdate ()
@@ -49,35 +60,46 @@ public class PlayerController : MonoBehaviour
 		} else {
 			moveSpeed = 9f; // affects the speed that the player moves around
 		}
-		if (Time.time >= idleTime) { // did this so the player won't slide while running after standing still for 0.35 seconds
-			Debug.Log ("Player is idle");
-			runningLeft = false; 
-			runningRight = false;
-		}
 		transform.rotation = Quaternion.Euler (0, 0, 0); // stops rotation
-		if (Input.GetKey ("a")) {
-			if (runningRight == false) {
-				transform.Translate (Vector3.left * moveSpeed * Time.deltaTime); // move to the left
-				runningLeft = true;
-			} else {
-				StartCoroutine ("SlideRight"); // slide to the right before moving left
+
+
+
+		if (Input.anyKey) {
+			if (Input.GetKey ("a")) {
+				_Acc -= _AccSpeed;
 			}
-			idleTime = Time.time + 0.35; // resets the idle time
+
+			if (Input.GetKey ("d")) {
+				_Acc += _AccSpeed;
+			}
+
+			if (Input.GetKey ("w") && canJump == true) {
+				rb.AddForce (jumpHeight, ForceMode2D.Impulse); // jump
+				canJump = false;
+			}
 		}
 
-		if (Input.GetKey ("d")) {
-			if (runningLeft == false) {
-				transform.Translate (Vector3.right * moveSpeed * Time.deltaTime); // move to the right
-				runningRight = true;
-			} else {
-				StartCoroutine ("SlideLeft"); // slide to the left before moving right
+		else
+		{
+			if (_Velocity > -3.0f && _Velocity < 3.0f) 
+			{
+			//	GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionX;
 			}
-			idleTime = Time.time + 0.35; // resets the idle time
+
+			else if (_Velocity > 3.0f) 
+			{
+				_Acc -= _AccSpeed;
+			} 
+
+			else if (_Velocity < -3.0f) 
+			{
+				_Acc += _AccSpeed;
+			}
+
+
 		}
-		if (Input.GetKey ("w") && canJump == true) {
-			rb.AddForce (jumpHeight, ForceMode2D.Impulse); // jump
-			canJump = false;
-		}
+		
+
 		currentHeight = gameObject.transform.position.y; // did this so the jump won't look floaty
 		if (currentHeight < oldHeight) { // if player is falling gravity is more
 			rb.gravityScale = 3;
@@ -85,18 +107,20 @@ public class PlayerController : MonoBehaviour
 			rb.gravityScale = 2;
 		}
 		oldHeight = currentHeight;
-	}
 
-	IEnumerator SlideRight(){
-		transform.Translate (Vector3.right * runSlideSpeed * Time.deltaTime); // slide to the right a little
-		yield return new WaitForSeconds (0.5f); // delay left movement
-		runningRight = false;
-	}
+		if (_Acc > _MaxAcc)
+			_Acc = _MaxAcc;
+		else if (_Acc < _MinAcc)
+			_Acc = _MinAcc;
 
-	IEnumerator SlideLeft(){
-		transform.Translate (Vector3.left * runSlideSpeed * Time.deltaTime); // slide to the left a little
-		yield return new WaitForSeconds (0.5f); // delay right movement
-		runningLeft = false;
+		_Velocity += _Acc;
+
+		if (_Velocity > _MaxVelocity)
+			_Velocity = _MaxVelocity;
+		else if (_Velocity < -_MaxVelocity)
+			_Velocity = -_MaxVelocity;
+
+		transform.Translate(Vector3.right * _Velocity * Time.deltaTime);
 	}
 
 	void OnCollisionEnter2D (Collision2D other)
@@ -127,21 +151,36 @@ public class PlayerController : MonoBehaviour
 			rb.gravityScale = 1;
 			rb.AddForce (slideHeight, ForceMode2D.Impulse);
 		}
+		if (other.gameObject.tag == "Ground") {
+			isTouchingGround = true;
+		}
 	}
 
 	void OnCollisionExit2D (Collision2D other)
 	{
 		isWallSliding = false;
 		canJump = false;
+		isTouchingGround = false;
 		Debug.Log ("Left the " + other.gameObject.tag);
 		if (other.gameObject.tag == "Wall") {
 			isWallJumping = true;
 			Debug.Log ("Wall Jump");
+		}
+
+		if (other.gameObject.tag == "Ground") {
+			canJump = false;
+			isWallSliding = false;
+			Debug.Log ("Left Ground");
 		}
 	}
 
 	IEnumerator Restart(){
 		yield return new WaitForSeconds (2);
 		SceneManager.LoadScene ("Mashup");
+	}
+
+	void slowDownRight()
+	{
+		transform.Translate (Vector3.right * runSlideSpeed * Time.deltaTime);
 	}
 }

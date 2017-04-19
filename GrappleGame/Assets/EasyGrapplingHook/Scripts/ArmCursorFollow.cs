@@ -14,7 +14,6 @@ public class ArmCursorFollow : MonoBehaviour {
 	void Start ()
 	{
 		arm = GetComponent<HingeJoint2D> ();
-		//JointMotor2D motor = arm.motor;
 		motor = new JointMotor2D();
 		motor.maxMotorTorque = 10000;
 		motorOff = false;
@@ -51,7 +50,7 @@ public class ArmCursorFollow : MonoBehaviour {
 //			arm.motor.motorSpeed = 100;
 //			arm.motor = motor;
 			motorOff = false;
-			motor.motorSpeed = 1000;
+			motor.motorSpeed = 2000;
 			arm.motor = motor;
 		} else if ((mouseAngle - currentAngle) < -10) {
 //			arm.motor.motorSpeed = -100;

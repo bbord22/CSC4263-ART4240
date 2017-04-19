@@ -24,7 +24,7 @@ public class GrappleInputManager : MonoBehaviour {
 	}
 	
 	private void UpdateInput () {
-		if(Input.GetMouseButtonDown(0))
+		if(Input.GetMouseButton(0))
 		{
 			// Find mouse position
 			Vector3 mouseInput = new Vector3(Input.mousePosition.x,Input.mousePosition.y,10);
@@ -57,14 +57,14 @@ public class GrappleInputManager : MonoBehaviour {
 			}
 		}
 		// Check for rope release
-		else if(Input.GetMouseButtonUp(1))
+		else// if(Input.GetMouseButtonUp(1))
 		{
 			grapple.ReleaseRope();
 		}
 
 		// Setting reeling and paying out
-		grapple.reeling_in = Input.GetKey(KeyCode.Z);
-		grapple.paying_out = Input.GetKey(KeyCode.X);
+		grapple.reeling_in = Input.GetMouseButton(1);
+		//grapple.paying_out = Input.GetKey(KeyCode.X);
 
 	}
 }

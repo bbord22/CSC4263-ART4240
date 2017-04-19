@@ -40,7 +40,7 @@ public class GrappleScript : MonoBehaviour {
 	public int playerLayer = 8;							// Layer the player gameobject is on
 	public bool autoSetLayer = true;
 	public Vector2 ropeBasePoint = new Vector2(0,0);	// Point on the player the rope is attached - local space
-	public bool allowRotation = true;				// Set orientation of player towards rope
+	public bool allowRotation = true;					// Set orientation of player towards rope
 	public bool ropeCollisions = true;					// Can the rope collide with objects
 	public float strength = 1;
 	void Start()
@@ -63,7 +63,10 @@ public class GrappleScript : MonoBehaviour {
 
 	void FixedUpdate () {
 
-
+		if (pivotAttached) 
+		{
+			GameObject.Find ("Player").GetComponent<HingeJoint2D> ().useMotor = false;
+		}
 		
 		if(pivotAttached)	// If currently swinging
 		{

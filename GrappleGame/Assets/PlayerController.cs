@@ -25,12 +25,18 @@ public class PlayerController : MonoBehaviour
 	private bool stationary;
 	private bool isTouchingGround;
 
-	public float _Velocity;    // Current Travelling Velocity
-	public float _MaxVelocity;  // Maxima Velocity
-	public float _Acc;    // Current Acceleration
-	public float _AccSpeed;   // Amount to increase Acceleration with.
-	public float _MaxAcc;     // Max Acceleration
-	public float _MinAcc;      // Min Acceleration
+	public float _Velocity;
+	// Current Travelling Velocity
+	public float _MaxVelocity;
+	// Maxima Velocity
+	public float _Acc;
+	// Current Acceleration
+	public float _AccSpeed;
+	// Amount to increase Acceleration with.
+	public float _MaxAcc;
+	// Max Acceleration
+	public float _MinAcc;
+	// Min Acceleration
 
 	private bool zeroVelocity;
 
@@ -51,6 +57,7 @@ public class PlayerController : MonoBehaviour
 		runningRight = false;
 		currentHeight = gameObject.transform.position.y;
 		oldHeight = currentHeight;
+		zeroVelocity = false;
 	}
 
 	void FixedUpdate ()
@@ -62,9 +69,8 @@ public class PlayerController : MonoBehaviour
 		}
 		transform.rotation = Quaternion.Euler (0, 0, 0); // stops rotation
 
-
-
 		if (Input.anyKey) {
+			zeroVelocity = false;
 			if (Input.GetKey ("a")) {
 				_Acc -= _AccSpeed;
 			}
@@ -77,29 +83,22 @@ public class PlayerController : MonoBehaviour
 				rb.AddForce (jumpHeight, ForceMode2D.Impulse); // jump
 				canJump = false;
 			}
-		}
+		} else {
+			if (zeroVelocity == false) {
+				if (_Velocity > -3.0f && _Velocity < 3.0f) {
+					_Velocity = 0;
+					_Acc = 0;
+					zeroVelocity = true;
+				} else if (_Velocity > 3.0f) {
+					_Acc -= _AccSpeed;
+				} else if (_Velocity < -3.0f) {
+					_Acc += _AccSpeed;
+				}
 
-		else
-		{
-			if (_Velocity > -3.0f && _Velocity < 3.0f) 
-			{
-			//	GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionX;
+
 			}
-
-			else if (_Velocity > 3.0f) 
-			{
-				_Acc -= _AccSpeed;
-			} 
-
-			else if (_Velocity < -3.0f) 
-			{
-				_Acc += _AccSpeed;
-			}
-
-
 		}
-		
-
+			
 		currentHeight = gameObject.transform.position.y; // did this so the jump won't look floaty
 		if (currentHeight < oldHeight) { // if player is falling gravity is more
 			rb.gravityScale = 3;
@@ -120,7 +119,7 @@ public class PlayerController : MonoBehaviour
 		else if (_Velocity < -_MaxVelocity)
 			_Velocity = -_MaxVelocity;
 
-		transform.Translate(Vector3.right * _Velocity * Time.deltaTime);
+		transform.Translate (Vector3.right * _Velocity * Time.deltaTime);
 	}
 
 	void OnCollisionEnter2D (Collision2D other)
@@ -174,12 +173,13 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	IEnumerator Restart(){
+	IEnumerator Restart ()
+	{
 		yield return new WaitForSeconds (2);
 		SceneManager.LoadScene ("Mashup");
 	}
 
-	void slowDownRight()
+	void slowDownRight ()
 	{
 		transform.Translate (Vector3.right * runSlideSpeed * Time.deltaTime);
 	}

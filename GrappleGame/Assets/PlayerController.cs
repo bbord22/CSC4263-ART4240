@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
 {
 	private float moveSpeed;
 	private float runSlideSpeed;
+	private Vector2 dir;
 	private Vector3 jumpHeight;
 	private Vector3 slideHeight;
 	private Rigidbody2D rb;
@@ -24,6 +25,13 @@ public class PlayerController : MonoBehaviour
 	private bool runningRight;
 	private bool stationary;
 	private bool isTouchingGround;
+	private bool isRising = false;
+	private bool isFalling = false;
+	private bool wallGrabRight = false;
+	private bool wallGrabLeft = false;
+	private float wallJumpForce;
+	public float maxSlideSpeed;
+
 
 	public float _Velocity;
 	// Current Travelling Velocity
@@ -47,9 +55,11 @@ public class PlayerController : MonoBehaviour
 		Physics.defaultSolverIterations = 10;
 		rb = gameObject.GetComponent<Rigidbody2D> ();
 		jumpHeight = new Vector3 (0f, 27f, 0f);
-		slideHeight = new Vector3 (0f, 12f, 0f);
+		slideHeight = new Vector3 (0f, 15f, 0f);
 		moveSpeed = 9f;
 		runSlideSpeed = 6f;
+		maxSlideSpeed = 2;
+		wallJumpForce = 10;
 		canJump = true;
 		isWallJumping = false;
 		isWallSliding = false;
@@ -62,6 +72,11 @@ public class PlayerController : MonoBehaviour
 
 	void FixedUpdate ()
 	{
+		if (isFalling && isWallSliding && (wallGrabLeft || wallGrabRight)) 
+		{
+			rb.velocity = rb.velocity.normalized * maxSlideSpeed;
+		}
+
 		if (isWallJumping == true) {
 			moveSpeed = 7f; // affects the distance that the player can jump from a wall
 		} else {
@@ -101,11 +116,23 @@ public class PlayerController : MonoBehaviour
 			
 		currentHeight = gameObject.transform.position.y; // did this so the jump won't look floaty
 		if (currentHeight < oldHeight) { // if player is falling gravity is more
-			rb.gravityScale = 3;
+			isFalling = true;
+			isRising = false;
 		} else { // if player is jumping gravity is less
-			rb.gravityScale = 2;
+			isRising = true;
+			isFalling = false;
 		}
 		oldHeight = currentHeight;
+
+		if (isRising) 
+		{
+			rb.gravityScale = 2;
+		}
+
+		if (isFalling) 
+		{
+			rb.gravityScale = 3;
+		}
 
 		if (_Acc > _MaxAcc)
 			_Acc = _MaxAcc;
@@ -136,6 +163,8 @@ public class PlayerController : MonoBehaviour
 			canJump = false;
 			isWallSliding = true;
 			Debug.Log ("Wall Slide");
+			_Acc = 0;
+			_Velocity = 0;
 		}
 		if (other.gameObject.name == "Finish Flag") {
 			other.gameObject.GetComponent<BoxCollider2D> ().enabled = false;
@@ -145,10 +174,28 @@ public class PlayerController : MonoBehaviour
 
 	void OnCollisionStay2D (Collision2D other)
 	{
+		dir.x = other.contacts [0].point.x - other.gameObject.transform.position.x;
+		dir = dir.normalized;
+
+
 		if (other.gameObject.tag == "Wall" && Input.GetKey ("w") && isWallSliding == false) {
 			isWallSliding = true;
-			rb.gravityScale = 1;
-			rb.AddForce (slideHeight, ForceMode2D.Impulse);
+		}
+		if(dir.x < 0 && Input.GetKey("d"))
+		{
+			wallGrabRight = true;
+		}
+		if(dir.x > 0 && Input.GetKey("a"))
+		{
+			wallGrabLeft = true;
+		}
+		if (Input.GetKeyUp ("d")) 
+		{
+			wallGrabRight = false;
+		}
+		if (Input.GetKeyUp ("a")) 
+		{
+			wallGrabLeft = false;
 		}
 		if (other.gameObject.tag == "Ground") {
 			isTouchingGround = true;
@@ -161,8 +208,17 @@ public class PlayerController : MonoBehaviour
 		canJump = false;
 		isTouchingGround = false;
 		Debug.Log ("Left the " + other.gameObject.tag);
+
+		dir.x = other.contacts [0].point.x - other.gameObject.transform.position.x;
+		dir.y = other.contacts [0].point.y - other.gameObject.transform.position.y;
+		dir.y = 0;
+		dir = dir.normalized;
+
 		if (other.gameObject.tag == "Wall") {
 			isWallJumping = true;
+			if (Input.GetKey ("w")) {
+				rb.AddRelativeForce (dir * wallJumpForce, ForceMode2D.Impulse);
+			}
 			Debug.Log ("Wall Jump");
 		}
 

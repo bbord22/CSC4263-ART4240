@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
 	private bool stationary;
 	private bool isTouchingGround;
 	private bool isRising = false;
-	private bool isFalling = false;
+	private bool isFalling = true;
 	private bool wallGrabRight = false;
 	private bool wallGrabLeft = false;
 	private float wallJumpForce;
@@ -54,8 +54,8 @@ public class PlayerController : MonoBehaviour
 	{
 		Physics.defaultSolverIterations = 10;
 		rb = gameObject.GetComponent<Rigidbody2D> ();
-		jumpHeight = new Vector3 (0f, 27f, 0f);
-		slideHeight = new Vector3 (0f, 15f, 0f);
+		jumpHeight = new Vector3 (0f, 10f, 0f);
+		slideHeight = new Vector3 (0f, 5f, 0f);
 		moveSpeed = 9f;
 		runSlideSpeed = 6f;
 		maxSlideSpeed = 2;
@@ -72,6 +72,7 @@ public class PlayerController : MonoBehaviour
 
 	void FixedUpdate ()
 	{
+		
 		if (isFalling && isWallSliding && (wallGrabLeft || wallGrabRight)) 
 		{
 			rb.velocity = rb.velocity.normalized * maxSlideSpeed;
@@ -100,7 +101,7 @@ public class PlayerController : MonoBehaviour
 			}
 		} else {
 			if (zeroVelocity == false) {
-				if (_Velocity > -3.0f && _Velocity < 3.0f) {
+				if (_Velocity > -2.0f && _Velocity < 2.0f) {
 					_Velocity = 0;
 					_Acc = 0;
 					zeroVelocity = true;
@@ -124,15 +125,21 @@ public class PlayerController : MonoBehaviour
 		}
 		oldHeight = currentHeight;
 
-		if (isRising) 
+		if (GameObject.FindGameObjectWithTag("Player").GetComponent<GrappleScript>().pivotAttached == true) 
+		{
+			rb.gravityScale = 1;
+		}
+		else if (isRising) 
 		{
 			rb.gravityScale = 2;
 		}
 
-		if (isFalling) 
+		else if (isFalling) 
 		{
 			rb.gravityScale = 3;
 		}
+
+
 
 		if (_Acc > _MaxAcc)
 			_Acc = _MaxAcc;

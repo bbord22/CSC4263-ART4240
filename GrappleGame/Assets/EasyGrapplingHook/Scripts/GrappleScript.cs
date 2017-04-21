@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 public class GrappleScript : MonoBehaviour {
 	
-	private bool pivotAttached = false;					// Are you currently swinging
+	public bool pivotAttached = false;					// Are you currently swinging
 	
 	private float ropeLength;							// Total length of rope
 
@@ -59,6 +59,7 @@ public class GrappleScript : MonoBehaviour {
 
 		if(autoSetLayer)
 			playerLayer = this.gameObject.layer;
+
 	}
 
 	void FixedUpdate () {
@@ -67,7 +68,15 @@ public class GrappleScript : MonoBehaviour {
 		{
 			GameObject.Find ("Player").GetComponent<HingeJoint2D> ().useMotor = false;
 		}
-		
+
+		if (pivotAttached) {
+			GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController> ().enabled = false;
+		} 
+		else 
+		{
+			GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController> ().enabled = true;
+		}
+
 		if(pivotAttached)	// If currently swinging
 		{
 			// If start swing, add grapple point

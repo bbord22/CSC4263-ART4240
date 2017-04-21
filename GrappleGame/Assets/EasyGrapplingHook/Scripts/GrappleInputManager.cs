@@ -51,7 +51,7 @@ public class GrappleInputManager : MonoBehaviour {
 				
 			}
 			// if something is hit, and that is not the player
-			if(hit.collider != null && hit.collider.gameObject.layer != grapple.playerLayer )
+			if(hit.collider != null && hit.collider.gameObject.layer != grapple.playerLayer && hit.transform.tag != "Player" && GameObject.FindGameObjectWithTag("Arm").GetComponent<GrappleScript>().swingReady == true)
 			{
 				grapple.AttachRope(hit.point);
 			}

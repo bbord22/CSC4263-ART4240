@@ -25,12 +25,15 @@ public class PlayerController : MonoBehaviour
 	private bool runningRight;
 	private bool stationary;
 	private bool isTouchingGround;
-	private bool isRising = false;
-	private bool isFalling = true;
+	public bool isRising = false;
+	public bool isFalling = true;
 	private bool wallGrabRight = false;
 	private bool wallGrabLeft = false;
 	private float wallJumpForce;
+	private bool armAttached = true;
 	public float maxSlideSpeed;
+	public GameObject arm;
+
 
 
 	public float _Velocity;
@@ -54,8 +57,8 @@ public class PlayerController : MonoBehaviour
 	{
 		Physics.defaultSolverIterations = 10;
 		rb = gameObject.GetComponent<Rigidbody2D> ();
-		jumpHeight = new Vector3 (0f, 10f, 0f);
-		slideHeight = new Vector3 (0f, 5f, 0f);
+		jumpHeight = new Vector3 (0f, 14f, 0f);
+		slideHeight = new Vector3 (0f, 8.5f, 0f);
 		moveSpeed = 9f;
 		runSlideSpeed = 6f;
 		maxSlideSpeed = 2;
@@ -68,6 +71,31 @@ public class PlayerController : MonoBehaviour
 		currentHeight = gameObject.transform.position.y;
 		oldHeight = currentHeight;
 		zeroVelocity = false;
+		arm = GameObject.FindGameObjectWithTag ("Arm");
+	}
+
+	void Update()
+	{
+		if(Input.GetKeyDown ("e") && armAttached == false){
+			armAttached = true;
+		}
+		else if (Input.GetKeyDown ("e") && armAttached == true) 
+		{
+			armAttached = false;
+		}
+
+		if (armAttached) 
+		{
+			arm.SetActive(true);
+			gameObject.GetComponent<HingeJoint2D>().enabled = true;
+			gameObject.GetComponent<ArmCursorFollow>().enabled = true;
+		}
+		if (!armAttached) 
+		{
+			gameObject.GetComponent<HingeJoint2D>().enabled = false;
+			gameObject.GetComponent<ArmCursorFollow>().enabled = false;
+			arm.SetActive(false);
+		}
 	}
 
 	void FixedUpdate ()
@@ -83,6 +111,8 @@ public class PlayerController : MonoBehaviour
 		} else {
 			moveSpeed = 9f; // affects the speed that the player moves around
 		}
+
+
 		transform.rotation = Quaternion.Euler (0, 0, 0); // stops rotation
 
 		if (Input.anyKey) {
@@ -99,6 +129,7 @@ public class PlayerController : MonoBehaviour
 				rb.AddForce (jumpHeight, ForceMode2D.Impulse); // jump
 				canJump = false;
 			}
+
 		} else {
 			if (zeroVelocity == false) {
 				if (_Velocity > -2.0f && _Velocity < 2.0f) {
@@ -125,7 +156,7 @@ public class PlayerController : MonoBehaviour
 		}
 		oldHeight = currentHeight;
 
-		if (GameObject.FindGameObjectWithTag("Player").GetComponent<GrappleScript>().pivotAttached == true) 
+		/*if (Input.GetMouseButton(0)) 
 		{
 			rb.gravityScale = 1;
 		}
@@ -134,10 +165,10 @@ public class PlayerController : MonoBehaviour
 			rb.gravityScale = 2;
 		}
 
-		else if (isFalling) 
+		else if (isFalling && (GameObject.FindGameObjectWithTag("Arm").GetComponent<GrappleScript>().pivotAttached == false))
 		{
 			rb.gravityScale = 3;
-		}
+		}*/
 
 
 

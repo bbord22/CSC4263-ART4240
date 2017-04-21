@@ -43,6 +43,10 @@ public class GrappleScript : MonoBehaviour {
 	public bool allowRotation = true;					// Set orientation of player towards rope
 	public bool ropeCollisions = true;					// Can the rope collide with objects
 	public float strength = 1;
+
+	public float timer = 0.5f;
+	private bool startTimer = false;
+	public bool swingReady = true;
 	void Start()
 	{
 		// Initialise rope renderer
@@ -62,7 +66,10 @@ public class GrappleScript : MonoBehaviour {
 
 	}
 
+
 	void FixedUpdate () {
+
+
 
 		if (pivotAttached) 
 		{
@@ -71,12 +78,21 @@ public class GrappleScript : MonoBehaviour {
 
 		if (pivotAttached) {
 			GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController> ().enabled = false;
+			GameObject.FindGameObjectWithTag ("Player").GetComponent<Rigidbody2D> ().gravityScale = 1;
 		} 
 		else 
 		{
 			GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController> ().enabled = true;
 		}
 
+		if (GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerController> ().isFalling && pivotAttached == false) 
+		{
+			GameObject.FindGameObjectWithTag ("Player").GetComponent<Rigidbody2D> ().gravityScale = 3;
+		}
+		if (GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerController> ().isRising && pivotAttached == false) 
+		{
+			GameObject.FindGameObjectWithTag ("Player").GetComponent<Rigidbody2D> ().gravityScale = 2;
+		}
 		if(pivotAttached)	// If currently swinging
 		{
 			// If start swing, add grapple point
@@ -85,6 +101,8 @@ public class GrappleScript : MonoBehaviour {
 				pivotList.Add(pivotPoint);
 				SetRopeLength();
 			}
+
+
 
 			if(ropeCollisions) // If rope collisions with world are enabled
 			{
@@ -183,6 +201,20 @@ public class GrappleScript : MonoBehaviour {
 	void Update()
 	{
 		renderRope();	
+		if (startTimer) 
+		{
+			timer -= Time.deltaTime;
+			if (timer <= 0) {
+				startTimer = false;
+				swingReady = true;
+			}
+		}
+		if (Mathf.Abs (this.transform.position.x - pivotList [pivotList.Count - 1].x) < 2 || Mathf.Abs (this.transform.position.y - pivotList [pivotList.Count - 1].y) < 2) 
+		{
+			ReleaseRope ();
+			startTimer = true;
+			swingReady = false;
+		}
 	}
 	
 	public void SetRopeLength()

@@ -20,7 +20,7 @@ public class ArmCursorFollow : MonoBehaviour {
 
 	}
 
-	void Update ()
+	void FixedUpdate ()
 	{
 
 

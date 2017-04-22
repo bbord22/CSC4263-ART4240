@@ -44,9 +44,7 @@ public class GrappleScript : MonoBehaviour {
 	public bool ropeCollisions = true;					// Can the rope collide with objects
 	public float strength = 1;
 
-	public float timer = 0.5f;
-	private bool startTimer = false;
-	public bool swingReady = true;
+
 	void Start()
 	{
 		// Initialise rope renderer
@@ -118,10 +116,10 @@ public class GrappleScript : MonoBehaviour {
 				                                     directionToPivot,distanceToPivot , ~(1<<playerLayer));
 				
 
-				if(hit.collider!=null)	// if raycast hits
+				if(hit.collider!=null && hit.transform.tag != "Player")	// if raycast hits
 				{
 
-					if(	Vector2.Distance(hit.point,pivotList[pivotList.Count-1]) > ropeBendTolerance ) 
+					if(	Vector2.Distance(hit.point,pivotList[pivotList.Count-1]) > ropeBendTolerance) 
 					// If hit point meets bend requirements
 					{
 						// Then add bend
@@ -201,20 +199,6 @@ public class GrappleScript : MonoBehaviour {
 	void Update()
 	{
 		renderRope();	
-		if (startTimer) 
-		{
-			timer -= Time.deltaTime;
-			if (timer <= 0) {
-				startTimer = false;
-				swingReady = true;
-			}
-		}
-		if (Mathf.Abs (this.transform.position.x - pivotList [pivotList.Count - 1].x) < 2 || Mathf.Abs (this.transform.position.y - pivotList [pivotList.Count - 1].y) < 2) 
-		{
-			ReleaseRope ();
-			startTimer = true;
-			swingReady = false;
-		}
 	}
 	
 	public void SetRopeLength()

@@ -5,22 +5,37 @@ public class GrappleInputManager : MonoBehaviour {
 	
 	GrappleScript grapple;
 	public Camera cam;
+	public GameObject arm;
 
 	public float angleStep = 1;
 	/* The angle around the target that the rope can attach to
 	 * i.e 90 means 90 degrees clockwise + 90 counter clockwise.*/
 	[Range(0.0f,360.0f)]
 	public float angleTolerance = 90;
-	
+	public static bool swingReady = true;
+	public float timer = 2;
+	public static bool startTimer = false;
+
 	void Start()
 	{
 		grapple = GetComponent<GrappleScript>();
 		cam = Camera.main;
+		arm = GameObject.FindGameObjectWithTag ("Arm");
 	}
 	
 	void Update()
 	{
 		UpdateInput();
+		if (startTimer) 
+		{
+			Debug.Log ("Timer Started");
+			timer -= Time.deltaTime;
+			if (timer <= 0) {
+				startTimer = false;
+				swingReady = true;
+				Debug.Log ("Time is Up");
+			}
+		}
 	}
 	
 	private void UpdateInput () {
@@ -51,15 +66,18 @@ public class GrappleInputManager : MonoBehaviour {
 				
 			}
 			// if something is hit, and that is not the player
-			if(hit.collider != null && hit.collider.gameObject.layer != grapple.playerLayer && hit.transform.tag != "Player" && GameObject.FindGameObjectWithTag("Arm").GetComponent<GrappleScript>().swingReady == true)
+			if(hit.collider != null && hit.collider.gameObject.layer != grapple.playerLayer && hit.transform.tag != "Player" && swingReady == true) //&& arm.GetComponent<GrappleScript>().swingReady == true)
 			{
 				grapple.AttachRope(hit.point);
+				GameObject.FindGameObjectWithTag("Player").GetComponent<ArmCursorFollow> ().enabled = false;
 			}
 		}
 		// Check for rope release
 		else// if(Input.GetMouseButtonUp(1))
 		{
 			grapple.ReleaseRope();
+			GameObject.FindGameObjectWithTag("Player").GetComponent<ArmCursorFollow> ().enabled = true;
+
 		}
 
 		// Setting reeling and paying out

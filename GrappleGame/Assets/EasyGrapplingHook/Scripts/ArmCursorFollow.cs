@@ -22,8 +22,6 @@ public class ArmCursorFollow : MonoBehaviour {
 
 	void FixedUpdate ()
 	{
-
-
 		Vector2 mousePos = Input.mousePosition;
 		Vector2 objectPos = Camera.main.WorldToScreenPoint (transform.position);
 		mousePos.x = mousePos.x - objectPos.x;
@@ -44,26 +42,21 @@ public class ArmCursorFollow : MonoBehaviour {
 			motor.motorSpeed = 0;
 			arm.motor = motor;
 		}
-
-
+			
 		if ((mouseAngle - currentAngle) > 10) {
-//			arm.motor.motorSpeed = 100;
-//			arm.motor = motor;
 			motorOff = false;
 			motor.motorSpeed = 2000;
 			arm.motor = motor;
 		} else if ((mouseAngle - currentAngle) < -10) {
-//			arm.motor.motorSpeed = -100;
-//			arm.motor = motor;
 			motorOff = false;
 			motor.motorSpeed = -1000;
 			arm.motor = motor;
 		}
+
 		if ((mouseAngle - currentAngle) < 10 || (mouseAngle - currentAngle) > -10) {
 			{
 				motorOff = true;
 				arm.motor = motor;
-				Debug.Log ("motor off");
 			}
 		}
 	}

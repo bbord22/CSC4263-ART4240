@@ -51,14 +51,15 @@ public class PlayerController : MonoBehaviour
 
 	private bool zeroVelocity;
 
-	//private double idleTime;
+	private bool normalMovement;
+	private bool leftGround;
 
 	void Start ()
 	{
 		Physics.defaultSolverIterations = 10;
 		rb = gameObject.GetComponent<Rigidbody2D> ();
 		jumpHeight = new Vector3 (0f, 14f, 0f);
-		slideHeight = new Vector3 (0f, 8.5f, 0f);
+		slideHeight = new Vector3 (0f, 10.5f, 0f);
 		moveSpeed = 9f;
 		runSlideSpeed = 6f;
 		maxSlideSpeed = 2;
@@ -100,7 +101,15 @@ public class PlayerController : MonoBehaviour
 
 	void FixedUpdate ()
 	{
-		
+		if (leftGround == true) 
+		{
+			normalMovement = false;
+		} 
+		else 
+		{
+			normalMovement = true;
+		}
+
 		if (isFalling && isWallSliding && (wallGrabLeft || wallGrabRight)) 
 		{
 			rb.velocity = rb.velocity.normalized * maxSlideSpeed;
@@ -112,38 +121,64 @@ public class PlayerController : MonoBehaviour
 			moveSpeed = 9f; // affects the speed that the player moves around
 		}
 
-
 		transform.rotation = Quaternion.Euler (0, 0, 0); // stops rotation
 
-		if (Input.anyKey) {
-			zeroVelocity = false;
-			if (Input.GetKey ("a")) {
-				_Acc -= _AccSpeed;
-			}
-
-			if (Input.GetKey ("d")) {
-				_Acc += _AccSpeed;
-			}
-
-			if (Input.GetKey ("w") && canJump == true) {
-				rb.AddForce (jumpHeight, ForceMode2D.Impulse); // jump
-				canJump = false;
-			}
-
-		} else {
-			if (zeroVelocity == false) {
-				if (_Velocity > -2.0f && _Velocity < 2.0f) {
-					_Velocity = 0;
-					_Acc = 0;
-					zeroVelocity = true;
-				} else if (_Velocity > 3.0f) {
+		if (normalMovement == true) {
+			if (Input.anyKey) {
+				zeroVelocity = false;
+				if (Input.GetKey ("a")) {
 					_Acc -= _AccSpeed;
-				} else if (_Velocity < -3.0f) {
+				}
+
+				if (Input.GetKey ("d")) {
 					_Acc += _AccSpeed;
 				}
 
+				if (Input.GetKey ("w") && canJump == true) {
+					rb.AddForce (jumpHeight, ForceMode2D.Impulse); // jump
+					canJump = false;
+				}
 
+			} else {
+				if (zeroVelocity == false) {
+					if (_Velocity > -2.0f && _Velocity < 2.0f) {
+						_Velocity = 0;
+						_Acc = 0;
+						zeroVelocity = true;
+					} else if (_Velocity > 3.0f) {
+						_Acc -= _AccSpeed;
+					} else if (_Velocity < -3.0f) {
+						_Acc += _AccSpeed;
+					}
+				}
 			}
+			if (_Acc > _MaxAcc)
+				_Acc = _MaxAcc;
+			else if (_Acc < _MinAcc)
+				_Acc = _MinAcc;
+
+			_Velocity += _Acc;
+
+			if (_Velocity > _MaxVelocity)
+				_Velocity = _MaxVelocity;
+			else if (_Velocity < -_MaxVelocity)
+				_Velocity = -_MaxVelocity;
+
+			transform.Translate (Vector3.right * _Velocity * Time.deltaTime);
+			Debug.Log ("Using normal movement");
+		} else {
+			if (Input.GetKey ("d")) 
+			{
+				rb.AddForce (Vector2.right, ForceMode2D.Impulse);
+			}
+
+			if (Input.GetKey ("a")) 
+			{
+				rb.AddForce (Vector2.left, ForceMode2D.Impulse);
+			}
+
+			rb.velocity = Vector2.ClampMagnitude (rb.velocity, 15);
+			Debug.Log("Using alternate movement");
 		}
 			
 		currentHeight = gameObject.transform.position.y; // did this so the jump won't look floaty
@@ -156,35 +191,6 @@ public class PlayerController : MonoBehaviour
 		}
 		oldHeight = currentHeight;
 
-		/*if (Input.GetMouseButton(0)) 
-		{
-			rb.gravityScale = 1;
-		}
-		else if (isRising) 
-		{
-			rb.gravityScale = 2;
-		}
-
-		else if (isFalling && (GameObject.FindGameObjectWithTag("Arm").GetComponent<GrappleScript>().pivotAttached == false))
-		{
-			rb.gravityScale = 3;
-		}*/
-
-
-
-		if (_Acc > _MaxAcc)
-			_Acc = _MaxAcc;
-		else if (_Acc < _MinAcc)
-			_Acc = _MinAcc;
-
-		_Velocity += _Acc;
-
-		if (_Velocity > _MaxVelocity)
-			_Velocity = _MaxVelocity;
-		else if (_Velocity < -_MaxVelocity)
-			_Velocity = -_MaxVelocity;
-
-		transform.Translate (Vector3.right * _Velocity * Time.deltaTime);
 	}
 
 	void OnCollisionEnter2D (Collision2D other)
@@ -194,7 +200,10 @@ public class PlayerController : MonoBehaviour
 		if (other.gameObject.tag == "Ground") {
 			canJump = true;
 			isWallSliding = false;
+			leftGround = false;
 			Debug.Log ("Touched Ground");
+			_Acc = 0;
+			_Velocity = 0;
 		}
 		if (other.gameObject.tag == "Wall" && isWallSliding == false) {
 			rb.AddForce (slideHeight, ForceMode2D.Impulse);
@@ -263,6 +272,7 @@ public class PlayerController : MonoBehaviour
 		if (other.gameObject.tag == "Ground") {
 			canJump = false;
 			isWallSliding = false;
+			leftGround = true;
 			Debug.Log ("Left Ground");
 		}
 	}

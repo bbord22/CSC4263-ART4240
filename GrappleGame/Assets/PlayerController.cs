@@ -167,12 +167,12 @@ public class PlayerController : MonoBehaviour
 			transform.Translate (Vector3.right * _Velocity * Time.deltaTime);
 			Debug.Log ("Using normal movement");
 		} else {
-			if (Input.GetKey ("d")) 
+			if (Input.GetKey ("d") && !wallGrabLeft && !wallGrabRight) 
 			{
 				rb.AddForce (Vector2.right, ForceMode2D.Impulse);
 			}
 
-			if (Input.GetKey ("a")) 
+			if (Input.GetKey ("a")  && !wallGrabLeft && !wallGrabRight) 
 			{
 				rb.AddForce (Vector2.left, ForceMode2D.Impulse);
 			}
@@ -251,6 +251,8 @@ public class PlayerController : MonoBehaviour
 
 	void OnCollisionExit2D (Collision2D other)
 	{
+		wallGrabLeft = false;
+		wallGrabRight = false;
 		isWallSliding = false;
 		canJump = false;
 		isTouchingGround = false;

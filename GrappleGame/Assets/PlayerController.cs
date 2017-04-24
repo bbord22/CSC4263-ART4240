@@ -268,7 +268,8 @@ public class PlayerController : MonoBehaviour
 
 		if (other.gameObject.tag == "Wall") {
 			isWallJumping = true;
-			if (Input.GetKey ("w")) {
+			if (Input.GetKeyDown ("w")) {
+				rb.AddForce (slideHeight, ForceMode2D.Impulse);
 				rb.AddRelativeForce (dir * wallJumpForce, ForceMode2D.Impulse);
 			}
 			Debug.Log ("Wall Jump");

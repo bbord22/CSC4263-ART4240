@@ -6,23 +6,14 @@ public class BulletScript : MonoBehaviour {
     public int speed;
     private GameObject player;
     private Transform target;
-<<<<<<< HEAD
     private Vector2 targetVector;
     private Rigidbody2D rb2d;
     private Vector2 path;
     private Vector3 position;
-=======
-    //private Rigidbody2D rb2d;
-    private Vector3 targetVector;
->>>>>>> origin/master
 
 	void Start () {
         player = GameObject.FindGameObjectWithTag("Player");
         target = player.transform;
-<<<<<<< HEAD
-=======
-        ///rb2d = GetComponent<Rigidbody2D>();
->>>>>>> origin/master
         targetVector = target.position;
         rb2d = GetComponent<Rigidbody2D>();
         path = (targetVector - (Vector2)transform.position).normalized;

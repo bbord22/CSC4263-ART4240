@@ -206,12 +206,15 @@ public class PlayerController : MonoBehaviour
 			_Velocity = 0;
 		}
 		if (other.gameObject.tag == "Wall" && isWallSliding == false) {
-			rb.AddForce (slideHeight, ForceMode2D.Impulse);
+			_Acc = 0;
+			_Velocity = 0;
+			if (Input.GetKey ("w")) 
+			{
+				rb.AddForce (slideHeight, ForceMode2D.Impulse);
+			}
 			canJump = false;
 			isWallSliding = true;
 			Debug.Log ("Wall Slide");
-			_Acc = 0;
-			_Velocity = 0;
 		}
 		if (other.gameObject.name == "Finish Flag") {
 			other.gameObject.GetComponent<BoxCollider2D> ().enabled = false;

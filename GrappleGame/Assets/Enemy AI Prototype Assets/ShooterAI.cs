@@ -15,6 +15,7 @@ public class ShooterAI : MonoBehaviour
     public float maxSpeed;
     public float shootCooldown;
     public GameObject bullet;
+    public GameObject bulletSpawn;
 
     void Start()
     {
@@ -73,7 +74,8 @@ public class ShooterAI : MonoBehaviour
 
     void shoot()
     {
-        
+        GameObject newBullet = Instantiate(bullet, bulletSpawn.transform) as GameObject;
+        Debug.Log("shooting a bullet");
         cooldownTimer = shootCooldown;
     }
 

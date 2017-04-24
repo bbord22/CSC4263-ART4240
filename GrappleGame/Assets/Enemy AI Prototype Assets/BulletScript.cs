@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,29 +6,36 @@ public class BulletScript : MonoBehaviour {
     public int speed;
     private GameObject player;
     private Transform target;
+<<<<<<< HEAD
+    private Vector2 targetVector;
+    private Rigidbody2D rb2d;
+    private Vector2 path;
+    private Vector3 position;
+=======
     //private Rigidbody2D rb2d;
     private Vector3 targetVector;
+>>>>>>> origin/master
 
 	void Start () {
         player = GameObject.FindGameObjectWithTag("Player");
         target = player.transform;
+<<<<<<< HEAD
+=======
         ///rb2d = GetComponent<Rigidbody2D>();
+>>>>>>> origin/master
         targetVector = target.position;
+        rb2d = GetComponent<Rigidbody2D>();
+        path = (targetVector - (Vector2)transform.position).normalized;
 	}
 	
 	void Update () {
-        float step = speed * Time.deltaTime;
-        transform.position = Vector2.MoveTowards(transform.position, targetVector, step);
-
-        if (transform.position == targetVector)
-        {
-            Destroy(gameObject);
-        }
+        position = transform.position;
+        rb2d.velocity = path * speed;
 	}
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag.Equals("Player") && !other.gameObject.tag.Equals("Enemy"))
+        if (other.gameObject.tag.Equals("Player"))
         {
             Destroy(other.gameObject);
         }

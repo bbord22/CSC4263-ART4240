@@ -206,11 +206,12 @@ public class PlayerController : MonoBehaviour
 			_Velocity = 0;
 		}
 		if (other.gameObject.tag == "Wall" && isWallSliding == false) {
-			_Acc = 0;
-			_Velocity = 0;
-			if (Input.GetKey ("w")) 
-			{
-				rb.AddForce (slideHeight, ForceMode2D.Impulse);
+			if (isFalling == false) {
+				_Acc = 0;
+				_Velocity = 0;
+				if (Input.GetKey ("w")) {
+					rb.AddForce (slideHeight, ForceMode2D.Impulse);
+				}
 			}
 			canJump = false;
 			isWallSliding = true;

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ShooterAI : MonoBehaviour
 {
@@ -77,8 +78,14 @@ public class ShooterAI : MonoBehaviour
         {
             gameObject.SendMessage("PlayerDied");
             Destroy(other.gameObject);
+			StartCoroutine ("EndGame");
         }
     }
+
+	IEnumerator EndGame(){
+		yield return new WaitForSeconds (3);
+		SceneManager.LoadScene ("Scenes/GameOver");
+	}
 
     void shoot()
     {

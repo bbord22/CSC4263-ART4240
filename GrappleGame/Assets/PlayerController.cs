@@ -97,6 +97,13 @@ public class PlayerController : MonoBehaviour
 			gameObject.GetComponent<ArmCursorFollow>().enabled = false;
 			arm.SetActive(false);
 		}
+		if (normalMovement == true) 
+		{
+			if (Input.GetKeyDown ("w") && canJump == true) {
+				rb.AddForce (jumpHeight, ForceMode2D.Impulse); // jump
+				canJump = false;
+			}
+		}
 	}
 
 	void FixedUpdate ()
@@ -132,11 +139,6 @@ public class PlayerController : MonoBehaviour
 
 				if (Input.GetKey ("d")) {
 					_Acc += _AccSpeed;
-				}
-
-				if (Input.GetKey ("w") && canJump == true) {
-					rb.AddForce (jumpHeight, ForceMode2D.Impulse); // jump
-					canJump = false;
 				}
 
 			} else {
@@ -206,20 +208,22 @@ public class PlayerController : MonoBehaviour
 			_Velocity = 0;
 		}
 		if (other.gameObject.tag == "Wall" && isWallSliding == false) {
-			if (isFalling == false) {
-				_Acc = 0;
-				_Velocity = 0;
-				if (Input.GetKey ("w")) {
-					rb.AddForce (slideHeight, ForceMode2D.Impulse);
+			{
+				if (isFalling == false) {
+					_Acc = 0;
+					_Velocity = 0;
+					if (Input.GetKey ("w")) {
+						rb.AddForce (slideHeight, ForceMode2D.Impulse);
+					}
 				}
+				canJump = false;
+				isWallSliding = true;
+				Debug.Log ("Wall Slide");
 			}
-			canJump = false;
-			isWallSliding = true;
-			Debug.Log ("Wall Slide");
-		}
-		if (other.gameObject.name == "Finish Flag") {
-			other.gameObject.GetComponent<BoxCollider2D> ().enabled = false;
-			StartCoroutine ("Restart");
+			if (other.gameObject.name == "Finish Flag") {
+				other.gameObject.GetComponent<BoxCollider2D> ().enabled = false;
+				StartCoroutine ("Restart");
+			}
 		}
 	}
 
@@ -250,6 +254,8 @@ public class PlayerController : MonoBehaviour
 		}
 		if (other.gameObject.tag == "Ground") {
 			isTouchingGround = true;
+			isWallSliding = false;
+			canJump = true;
 		}
 	}
 

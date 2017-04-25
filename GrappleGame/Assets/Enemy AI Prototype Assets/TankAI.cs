@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TankAI : MonoBehaviour {
     private int state;
@@ -50,8 +51,15 @@ public class TankAI : MonoBehaviour {
             player = null;
             playerT = null;
             Destroy(other.gameObject);
+			StartCoroutine ("EndGame");
         }
     }
+
+	IEnumerator EndGame(){
+		yield return new WaitForSeconds (3);
+		SceneManager.LoadScene ("Scenes/GameOver");
+	}
+
 
     void facePlayer()
     {

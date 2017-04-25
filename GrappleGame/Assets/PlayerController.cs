@@ -38,7 +38,10 @@ public class PlayerController : MonoBehaviour
 	public float maxSlideSpeed;
 	public GameObject arm;
 	public Animator anim;
-    public GameObject PausePanel;
+  public GameObject PausePanel;
+	public bool runningRight;
+	public bool runningLeft;
+	public bool isPlaying = false;
 
 
 
@@ -103,45 +106,58 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-		if (armAttached) 
+		if (armAttached)
 		{
 			arm.SetActive(true);
 			gameObject.GetComponent<HingeJoint2D>().enabled = true;
 			gameObject.GetComponent<ArmCursorFollow>().enabled = true;
 		}
-		if (!armAttached) 
+		if (!armAttached)
 		{
 			gameObject.GetComponent<HingeJoint2D>().enabled = false;
 			gameObject.GetComponent<ArmCursorFollow>().enabled = false;
 			arm.SetActive(false);
 		}
-		if (normalMovement == true) 
+		if (!isPaused){
+		if (normalMovement == true)
 		{
-            if (!isPaused)
-            {
+
                 if (Input.GetKeyDown("w") && canJump == true)
                 {
                     rb.AddForce(jumpHeight, ForceMode2D.Impulse); // jump
                     canJump = false;
                 }
-            }
+								if((runningLeft || runningRight) && isPlaying == false){
+									GetComponent<AudioSource>().Play();
+									isPlaying = true;
+								}
+								else if (!(runningLeft ||runningRight) && isPlaying == true){
+									GetComponent<AudioSource>().Stop();
+									isPlaying = false;
+								}
+      }
+			else{
+				isPlaying = false;
+				GetComponent<AudioSource>().Stop();
+			}
+
 		}
 	}
 
 	void FixedUpdate ()
 	{
-		
 
-		if (leftGround == true) 
+
+		if (leftGround == true)
 		{
 			normalMovement = false;
-		} 
-		else 
+		}
+		else
 		{
 			normalMovement = true;
 		}
 
-		if (isFalling && isWallSliding && (wallGrabLeft || wallGrabRight)) 
+		if (isFalling && isWallSliding && (wallGrabLeft || wallGrabRight))
 		{
 			rb.velocity = rb.velocity.normalized * maxSlideSpeed;
 		}
@@ -159,13 +175,17 @@ public class PlayerController : MonoBehaviour
 				zeroVelocity = false;
 				if (Input.GetKey ("a")) {
 					_Acc -= _AccSpeed;
+					runningLeft = true;
 				}
 
 				if (Input.GetKey ("d")) {
 					_Acc += _AccSpeed;
+					runningRight = true;
 				}
 
 			} else {
+				runningRight = false;
+				runningLeft = false;
 				if (zeroVelocity == false) {
 					if (_Velocity > -2.0f && _Velocity < 2.0f) {
 						_Velocity = 0;
@@ -194,12 +214,12 @@ public class PlayerController : MonoBehaviour
 			Debug.Log ("Using normal movement");
 		} else if(!isPaused)
         {
-			if (Input.GetKey ("d")/* && !wallGrabLeft && !wallGrabRight*/) 
+			if (Input.GetKey ("d")/* && !wallGrabLeft && !wallGrabRight*/)
 			{
 				rb.AddForce (Vector2.right, ForceMode2D.Impulse);
 			}
 
-			if (Input.GetKey ("a")/*  && !wallGrabLeft && !wallGrabRight*/) 
+			if (Input.GetKey ("a")/*  && !wallGrabLeft && !wallGrabRight*/)
 			{
 				rb.AddForce (Vector2.left, ForceMode2D.Impulse);
 			}
@@ -207,7 +227,7 @@ public class PlayerController : MonoBehaviour
 			rb.velocity = Vector2.ClampMagnitude (rb.velocity, 15);
 			Debug.Log("Using alternate movement");
 		}
-			
+
 		currentHeight = gameObject.transform.position.y; // did this so the jump won't look floaty
 		if (currentHeight < oldHeight) { // if player is falling gravity is more
 			isFalling = true;
@@ -223,7 +243,7 @@ public class PlayerController : MonoBehaviour
 			movingLeft = true;
 			movingRight = false;
 			stationaryX = false;
-		} 
+		}
 		else if (currentX == oldX) { // if player is falling gravity is more
 			movingLeft = false;
 			movingRight = false;
@@ -328,7 +348,7 @@ public class PlayerController : MonoBehaviour
 		dir = dir.normalized;
 
 		if (other.gameObject.tag == "Wall") {
-			if (wallGrabRight || isTouchingGround) 
+			if (wallGrabRight || isTouchingGround)
 			{
 				//GameObject.Find("Model").transform.Translate(Vector3.right * 0.7f);
 			}

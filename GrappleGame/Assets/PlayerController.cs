@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
 	private float currentHeight;
 	private float oldX;
 	private float currentX;
-    private bool isPaused = false;
+    private bool isPaused;
 	public bool movingLeft;
 	public bool movingRight;
 	public bool stationaryX;
@@ -80,6 +80,8 @@ public class PlayerController : MonoBehaviour
 		zeroVelocity = false;
 		arm = GameObject.FindGameObjectWithTag ("Arm");
 		anim = GameObject.FindGameObjectWithTag("Model").GetComponent<Animator> ();
+        isPaused = false;
+        PausePanel.SetActive(false);
 	}
 
 	void Update()

@@ -14,26 +14,22 @@ public class AnimationScript : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () {
-		if ((Input.GetKey("a") || player.wallGrabRight) && player.arm.transform.position.z != -4) 
-		{
+	void FixedUpdate ()
+	{
+		if ((Input.GetKey ("a") || player.wallGrabRight || player.isTouchingGround == false && !player.isWallSliding) && player.arm.transform.position.z != -4) {
 			player.arm.transform.Translate (Vector3.back);
-		}
-		else if ((Input.GetKey("d") || player.wallGrabLeft) && player.arm.transform.position.z != 0) 
-		{
+		} else if ((Input.GetKey ("d") || player.wallGrabLeft) && player.arm.transform.position.z != 0) {
 			player.arm.transform.Translate (Vector3.forward);
 		}
 
-		if (player.isTouchingGround == false && !player.isWallSliding)
-		{
+		if (player.isTouchingGround == false && !player.isWallSliding || player.isTouchingGround == false && !player.isWallSliding) {
 			anime.SetInteger ("State", 3);
 			player.armAttached = true;
 		}
-		if ((player.isTouchingGround == false && Input.GetKey("a") && !player.isWallSliding))/* || (player.isTouchingGround == false && player.movingLeft))*/
-		{
+		if ((player.isTouchingGround == false && Input.GetKey ("a") && !player.isWallSliding))
 			anime.SetInteger ("State", 4);
-			player.armAttached = true;
-		}
+		player.armAttached = true;
+
 		if (player.isTouchingGround && Input.GetKey("d")) 
 		{
 			anime.SetInteger ("State", 1);

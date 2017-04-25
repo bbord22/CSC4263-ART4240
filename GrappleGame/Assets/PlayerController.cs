@@ -117,7 +117,7 @@ public class PlayerController : MonoBehaviour
 		{
             if (!isPaused)
             {
-                if (Input.GetKey("w") && canJump == true)
+                if (Input.GetKeyDown("w") && canJump == true)
                 {
                     rb.AddForce(jumpHeight, ForceMode2D.Impulse); // jump
                     canJump = false;
@@ -192,12 +192,12 @@ public class PlayerController : MonoBehaviour
 			Debug.Log ("Using normal movement");
 		} else if(!isPaused)
         {
-			if (Input.GetKey ("d") && !wallGrabLeft && !wallGrabRight) 
+			if (Input.GetKey ("d")/* && !wallGrabLeft && !wallGrabRight*/) 
 			{
 				rb.AddForce (Vector2.right, ForceMode2D.Impulse);
 			}
 
-			if (Input.GetKey ("a")  && !wallGrabLeft && !wallGrabRight) 
+			if (Input.GetKey ("a")/*  && !wallGrabLeft && !wallGrabRight*/) 
 			{
 				rb.AddForce (Vector2.left, ForceMode2D.Impulse);
 			}

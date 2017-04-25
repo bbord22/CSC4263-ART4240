@@ -20,6 +20,7 @@ public class ShooterAI : MonoBehaviour
     public float shootCooldown;
     public GameObject bullet;
     public GameObject bulletSpawn;
+	public Animator anim;
 
     void Start()
     {
@@ -29,11 +30,21 @@ public class ShooterAI : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         playerT = player.GetComponent<Transform>();
         cooldownTimer = 0;
+		anim = this.GetComponent<Animator> ();
     }
 
     void Update()
     {
-        if (!(state == 2))
+		if (isFacingRight) 
+		{
+			anim.SetInteger ("State", 0);
+		}
+		if (isFacingLeft) 
+		{
+			anim.SetInteger ("State", 1);
+		}
+
+		if (!(state == 2))
         {
             checkPlayerDist();
         }
@@ -131,8 +142,8 @@ public class ShooterAI : MonoBehaviour
     void flip()
     {
         facing = facing * -1; //change which way it is labeled as facing
-        isFacingLeft = !isFacingLeft;
-        isFacingRight = !isFacingRight;
+        isFacingLeft = !isFacingRight;
+        isFacingRight = !isFacingLeft;
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;

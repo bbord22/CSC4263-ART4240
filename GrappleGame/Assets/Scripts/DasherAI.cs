@@ -14,11 +14,12 @@ public class DasherAI : MonoBehaviour
     private float distFromPlayer;
     private float cooldown;
     private float dashTime;
-    private bool isFacingRight = true;
-    private bool isFacingLeft = false;
-    private bool isDashing = false;
+	public bool isFacingRight = true;
+	public bool isFacingLeft = false;
+    public bool isDashing = false;
     public float AggroRadius;
     public float cooldownTime;
+	public Animator anim;
 
     void Start ()
     {
@@ -30,12 +31,37 @@ public class DasherAI : MonoBehaviour
         cooldown = 0.0f;
         player = GameObject.FindGameObjectWithTag("Player");
         playerT = player.transform;
+		anim = this.GetComponent<Animator> ();
     }
 
-	// Update is called once per frame
+	void FixedUpdate()
+	{
+		if (isFacingRight) 
+		{
+			anim.SetInteger ("State", 0);
+		}
+
+		if (isFacingLeft) 
+		{
+			anim.SetInteger ("State", 1);
+		}
+
+		if (isFacingRight && isDashing) 
+		{
+			anim.SetInteger ("State", 2);
+		}
+
+		if (isFacingLeft && isDashing) 
+		{
+			anim.SetInteger ("State", 3);
+		}
+	}
+
+
 	void Update ()
     {
-        if (state == 0)
+		
+		if (state == 0)
         {
             checkPlayerDist();
         }

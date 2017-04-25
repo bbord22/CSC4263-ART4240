@@ -31,7 +31,7 @@ public class DasherAI : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         playerT = player.transform;
     }
-	
+
 	// Update is called once per frame
 	void Update ()
     {
@@ -98,6 +98,7 @@ public class DasherAI : MonoBehaviour
         rigidBody.AddForce(new Vector2(facing * 200f * 4, 0));
         cooldown = cooldownTime;
         dashTime = .5f;
+        GetComponent<AudioSource>().Play();
     }
 
     void facePlayer()

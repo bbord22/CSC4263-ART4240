@@ -14,6 +14,9 @@ public class DasherAI : MonoBehaviour
     private float distFromPlayer;
     private float cooldown;
     private float dashTime;
+    private bool isFacingRight = true;
+    private bool isFacingLeft = false;
+    private bool isDashing = false;
     public float AggroRadius;
     public float cooldownTime;
 
@@ -55,8 +58,10 @@ public class DasherAI : MonoBehaviour
         if(dashTime > 0.0f)
         {
             dashTime -= Time.deltaTime;
-        } else
+        }
+        else
         {
+            isDashing = false;
             rigidBody.velocity = new Vector2(facing * maxSpeed, rigidBody.velocity.y);
         }
     }
@@ -89,7 +94,7 @@ public class DasherAI : MonoBehaviour
 
     void dash()
     {
-        Debug.Log("Dashing");
+        isDashing = true;
         rigidBody.AddForce(new Vector2(facing * 200f * 4, 0));
         cooldown = cooldownTime;
         dashTime = .5f;
@@ -122,6 +127,8 @@ public class DasherAI : MonoBehaviour
     void flip()
     {
         facing = facing * -1; //change which way it is labeled as facing
+        isFacingLeft = !isFacingLeft;
+        isFacingRight = !isFacingRight;
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;

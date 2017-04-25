@@ -12,6 +12,8 @@ public class ShooterAI : MonoBehaviour
     private Transform playerT;
     private float cooldownTimer;
     private float distFromPlayer;
+    private bool isFacingRight = true;
+    private bool isFacingLeft = false;
     public float AggroRadius;
     public float maxSpeed;
     public float shootCooldown;
@@ -125,6 +127,8 @@ public class ShooterAI : MonoBehaviour
     void flip()
     {
         facing = facing * -1; //change which way it is labeled as facing
+        isFacingLeft = !isFacingLeft;
+        isFacingRight = !isFacingRight;
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;

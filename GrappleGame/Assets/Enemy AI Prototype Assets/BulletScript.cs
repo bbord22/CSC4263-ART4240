@@ -28,6 +28,7 @@ public class BulletScript : MonoBehaviour {
     {
         if (other.gameObject.tag.Equals("Player"))
         {
+            gameObject.SendMessageUpwards("PlayerDied");
             Destroy(other.gameObject);
         }
 

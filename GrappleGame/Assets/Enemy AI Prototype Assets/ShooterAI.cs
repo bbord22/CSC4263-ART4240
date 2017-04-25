@@ -29,7 +29,10 @@ public class ShooterAI : MonoBehaviour
 
     void Update()
     {
-        checkPlayerDist();
+        if (!(state == 2))
+        {
+            checkPlayerDist();
+        }
 
         if (state == 1)
         {
@@ -53,6 +56,13 @@ public class ShooterAI : MonoBehaviour
         }
     }
 
+    void PlayerDied()
+    {
+        state = 2;
+        player = null;
+        playerT = null;
+    }
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.tag == "PlatformEdge")
@@ -65,9 +75,7 @@ public class ShooterAI : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            state = 2;
-            player = null;
-            playerT = null;
+            gameObject.SendMessage("PlayerDied");
             Destroy(other.gameObject);
         }
     }
@@ -75,7 +83,6 @@ public class ShooterAI : MonoBehaviour
     void shoot()
     {
         GameObject newBullet = Instantiate(bullet, bulletSpawn.transform) as GameObject;
-        Debug.Log("shooting a bullet");
         cooldownTimer = shootCooldown;
     }
 
@@ -93,15 +100,18 @@ public class ShooterAI : MonoBehaviour
 
     void checkPlayerDist()
     {
-        distFromPlayer = Vector2.Distance(playerT.position, transform.position);
+        if (!(state == 2))
+        {
+            distFromPlayer = Vector2.Distance(playerT.position, transform.position);
 
-        if (distFromPlayer < AggroRadius)
-        {
-            state = 1;
-        }
-        else
-        {
-            state = 0;
+            if (distFromPlayer < AggroRadius)
+            {
+                state = 1;
+            }
+            else
+            {
+                state = 0;
+            }
         }
     }
 

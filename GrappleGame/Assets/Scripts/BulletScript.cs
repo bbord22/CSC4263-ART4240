@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BulletScript : MonoBehaviour {
     public int speed;
@@ -32,8 +33,15 @@ public class BulletScript : MonoBehaviour {
         {
             gameObject.SendMessageUpwards("PlayerDied");
             Destroy(other.gameObject);
+            StartCoroutine("EndGame");
         }
 
         Destroy(gameObject);
+    }
+
+    IEnumerator EndGame()
+    {
+        yield return new WaitForSeconds(3);
+        SceneManager.LoadScene("Scenes/GameOver");
     }
 }

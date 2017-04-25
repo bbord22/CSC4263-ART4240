@@ -80,6 +80,7 @@ public class PlayerController : MonoBehaviour
 		zeroVelocity = false;
 		arm = GameObject.FindGameObjectWithTag ("Arm");
 		anim = GameObject.FindGameObjectWithTag("Model").GetComponent<Animator> ();
+        PausePanel.SetActive(false);
 	}
 
 	void Update()

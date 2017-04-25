@@ -12,9 +12,9 @@ public class GrappleInputManager : MonoBehaviour {
 	 * i.e 90 means 90 degrees clockwise + 90 counter clockwise.*/
 	[Range(0.0f,360.0f)]
 	public float angleTolerance = 90;
-	public static bool swingReady = true;
+	public bool swingReady = true;
 	public float timer = 2;
-	public static bool startTimer = false;
+	public bool startTimer = false;
 
 	void Start()
 	{

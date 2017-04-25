@@ -16,7 +16,7 @@ public class AnimationScript : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate ()
 	{
-		if ((Input.GetKey ("a") || player.wallGrabRight || player.isTouchingGround == false && !player.isWallSliding) && player.arm.transform.position.z != -4) {
+		if ((Input.GetKey ("a") || player.wallGrabRight || player.isTouchingGround == false && !player.isWallSliding) && player.arm.transform.position.z != -1) {
 			player.arm.transform.Translate (Vector3.back);
 		} else if ((Input.GetKey ("d") || player.wallGrabLeft) && player.arm.transform.position.z != 0) {
 			player.arm.transform.Translate (Vector3.forward);

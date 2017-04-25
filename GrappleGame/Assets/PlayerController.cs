@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
 	private bool armAttached = true;
 	public float maxSlideSpeed;
 	public GameObject arm;
+	private bool isPlaying = false;
 
 
 
@@ -80,44 +81,59 @@ public class PlayerController : MonoBehaviour
 		if(Input.GetKeyDown ("e") && armAttached == false){
 			armAttached = true;
 		}
-		else if (Input.GetKeyDown ("e") && armAttached == true) 
+		else if (Input.GetKeyDown ("e") && armAttached == true)
 		{
 			armAttached = false;
 		}
 
-		if (armAttached) 
+		if (armAttached)
 		{
 			arm.SetActive(true);
 			gameObject.GetComponent<HingeJoint2D>().enabled = true;
 			gameObject.GetComponent<ArmCursorFollow>().enabled = true;
 		}
-		if (!armAttached) 
+		if (!armAttached)
 		{
 			gameObject.GetComponent<HingeJoint2D>().enabled = false;
 			gameObject.GetComponent<ArmCursorFollow>().enabled = false;
 			arm.SetActive(false);
 		}
-		if (normalMovement == true) 
+		if (normalMovement == true)
 		{
 			if (Input.GetKeyDown ("w") && canJump == true) {
 				rb.AddForce (jumpHeight, ForceMode2D.Impulse); // jump
 				canJump = false;
 			}
+			if((runningLeft || runningRight) && isPlaying ==false){
+				GetComponent<AudioSource>().Play();
+
+				isPlaying = true;
+			}
+
+			else if(!(runningLeft || runningRight) && isPlaying ==true){
+				GetComponent<AudioSource>().Stop();
+				isPlaying = false;
+			}
 		}
+		else{
+			isPlaying = false;
+			GetComponent<AudioSource>().Stop();
+		}
+
 	}
 
 	void FixedUpdate ()
 	{
-		if (leftGround == true) 
+		if (leftGround == true)
 		{
 			normalMovement = false;
-		} 
-		else 
+		}
+		else
 		{
 			normalMovement = true;
 		}
 
-		if (isFalling && isWallSliding && (wallGrabLeft || wallGrabRight)) 
+		if (isFalling && isWallSliding && (wallGrabLeft || wallGrabRight))
 		{
 			rb.velocity = rb.velocity.normalized * maxSlideSpeed;
 		}
@@ -135,13 +151,17 @@ public class PlayerController : MonoBehaviour
 				zeroVelocity = false;
 				if (Input.GetKey ("a")) {
 					_Acc -= _AccSpeed;
+					runningLeft = true;
 				}
 
 				if (Input.GetKey ("d")) {
 					_Acc += _AccSpeed;
+					runningRight = true;
 				}
 
 			} else {
+				runningLeft = false;
+				runningRight = false;
 				if (zeroVelocity == false) {
 					if (_Velocity > -2.0f && _Velocity < 2.0f) {
 						_Velocity = 0;
@@ -169,12 +189,12 @@ public class PlayerController : MonoBehaviour
 			transform.Translate (Vector3.right * _Velocity * Time.deltaTime);
 			Debug.Log ("Using normal movement");
 		} else {
-			if (Input.GetKey ("d") && !wallGrabLeft && !wallGrabRight) 
+			if (Input.GetKey ("d") && !wallGrabLeft && !wallGrabRight)
 			{
 				rb.AddForce (Vector2.right, ForceMode2D.Impulse);
 			}
 
-			if (Input.GetKey ("a")  && !wallGrabLeft && !wallGrabRight) 
+			if (Input.GetKey ("a")  && !wallGrabLeft && !wallGrabRight)
 			{
 				rb.AddForce (Vector2.left, ForceMode2D.Impulse);
 			}
@@ -182,7 +202,7 @@ public class PlayerController : MonoBehaviour
 			rb.velocity = Vector2.ClampMagnitude (rb.velocity, 15);
 			Debug.Log("Using alternate movement");
 		}
-			
+
 		currentHeight = gameObject.transform.position.y; // did this so the jump won't look floaty
 		if (currentHeight < oldHeight) { // if player is falling gravity is more
 			isFalling = true;
@@ -244,11 +264,11 @@ public class PlayerController : MonoBehaviour
 		{
 			wallGrabLeft = true;
 		}
-		if (Input.GetKeyUp ("d")) 
+		if (Input.GetKeyUp ("d"))
 		{
 			wallGrabRight = false;
 		}
-		if (Input.GetKeyUp ("a")) 
+		if (Input.GetKeyUp ("a"))
 		{
 			wallGrabLeft = false;
 		}

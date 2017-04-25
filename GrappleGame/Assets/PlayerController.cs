@@ -55,6 +55,9 @@ public class PlayerController : MonoBehaviour
 	private bool normalMovement;
 	private bool leftGround;
 
+    private bool isPaused = false;
+    public GameObject pausePanel;
+
 	void Start ()
 	{
 		Physics.defaultSolverIterations = 10;
@@ -74,52 +77,65 @@ public class PlayerController : MonoBehaviour
 		oldHeight = currentHeight;
 		zeroVelocity = false;
 		arm = GameObject.FindGameObjectWithTag ("Arm");
+        pausePanel.SetActive(false);
 	}
 
 	void Update()
 	{
-		if(Input.GetKeyDown ("e") && armAttached == false){
-			armAttached = true;
-		}
-		else if (Input.GetKeyDown ("e") && armAttached == true)
-		{
-			armAttached = false;
-		}
+        if(Input.GetKeyDown("p"))
+        {
+            pause();
+        }
 
-		if (armAttached)
-		{
-			arm.SetActive(true);
-			gameObject.GetComponent<HingeJoint2D>().enabled = true;
-			gameObject.GetComponent<ArmCursorFollow>().enabled = true;
-		}
-		if (!armAttached)
-		{
-			gameObject.GetComponent<HingeJoint2D>().enabled = false;
-			gameObject.GetComponent<ArmCursorFollow>().enabled = false;
-			arm.SetActive(false);
-		}
-		if (normalMovement == true)
-		{
-			if (Input.GetKeyDown ("w") && canJump == true) {
-				rb.AddForce (jumpHeight, ForceMode2D.Impulse); // jump
-				canJump = false;
-			}
-			if((runningLeft || runningRight) && isPlaying ==false){
-				GetComponent<AudioSource>().Play();
+        if (!isPaused)
+        {
+            if (Input.GetKeyDown("e") && armAttached == false)
+            {
+                armAttached = true;
+            }
+            else if (Input.GetKeyDown("e") && armAttached == true)
+            {
+                armAttached = false;
+            }
 
-				isPlaying = true;
-			}
+            if (armAttached)
+            {
+                arm.SetActive(true);
+                gameObject.GetComponent<HingeJoint2D>().enabled = true;
+                gameObject.GetComponent<ArmCursorFollow>().enabled = true;
+            }
+            if (!armAttached)
+            {
+                gameObject.GetComponent<HingeJoint2D>().enabled = false;
+                gameObject.GetComponent<ArmCursorFollow>().enabled = false;
+                arm.SetActive(false);
+            }
+            if (normalMovement == true)
+            {
+                if (Input.GetKeyDown("w") && canJump == true)
+                {
+                    rb.AddForce(jumpHeight, ForceMode2D.Impulse); // jump
+                    canJump = false;
+                }
+                if ((runningLeft || runningRight) && isPlaying == false)
+                {
+                    GetComponent<AudioSource>().Play();
 
-			else if(!(runningLeft || runningRight) && isPlaying ==true){
-				GetComponent<AudioSource>().Stop();
-				isPlaying = false;
-			}
-		}
-		else{
-			isPlaying = false;
-			GetComponent<AudioSource>().Stop();
-		}
+                    isPlaying = true;
+                }
 
+                else if (!(runningLeft || runningRight) && isPlaying == true)
+                {
+                    GetComponent<AudioSource>().Stop();
+                    isPlaying = false;
+                }
+            }
+            else
+            {
+                isPlaying = false;
+                GetComponent<AudioSource>().Stop();
+            }
+        }
 	}
 
 	void FixedUpdate ()
@@ -320,4 +336,21 @@ public class PlayerController : MonoBehaviour
 	{
 		transform.Translate (Vector3.right * runSlideSpeed * Time.deltaTime);
 	}
+
+    void pause()
+    {
+        isPaused = !isPaused;
+        if (isPaused)
+        {
+            Time.timeScale = 0;
+            pausePanel.SetActive(true);
+            Debug.Log("Pausing game");
+        }
+        else
+        {
+            Time.timeScale = 1;
+            pausePanel.SetActive(false);
+            Debug.Log("Resuming game");
+        }
+    }
 }

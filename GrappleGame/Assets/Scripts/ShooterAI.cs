@@ -96,6 +96,7 @@ public class ShooterAI : MonoBehaviour
     {
         GameObject newBullet = Instantiate(bullet, bulletSpawn.transform) as GameObject;
         cooldownTimer = shootCooldown;
+        GetComponent<AudioSource>().Play();
     }
 
     void facePlayer()

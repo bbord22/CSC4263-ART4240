@@ -29,7 +29,7 @@ public class BulletScript : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag.Equals("Player") && !other.gameObject.tag.Equals("Enemy"))
+        if (other.gameObject.tag.Equals("Player"))
         {
             gameObject.SendMessageUpwards("PlayerDied");
             Destroy(other.gameObject);

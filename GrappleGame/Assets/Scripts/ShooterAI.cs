@@ -14,6 +14,7 @@ public class ShooterAI : MonoBehaviour
     private float distFromPlayer;
     private bool isFacingRight = true;
     private bool isFacingLeft = false;
+    private bool isMoving = true;
     public float AggroRadius;
     public float maxSpeed;
     public float shootCooldown;
@@ -46,10 +47,12 @@ public class ShooterAI : MonoBehaviour
                 shoot();
             }
 
+            isMoving = false;
             rigidBody.velocity = new Vector2(0, 0);
         }
         else
         {
+            isMoving = true;
             rigidBody.velocity = new Vector2(facing * maxSpeed, rigidBody.velocity.y);
         }
 

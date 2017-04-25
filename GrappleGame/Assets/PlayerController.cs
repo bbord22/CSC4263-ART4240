@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
 	private float currentHeight;
 	private float oldX;
 	private float currentX;
+    private bool isPaused = false;
 	public bool movingLeft;
 	public bool movingRight;
 	public bool stationaryX;
@@ -37,6 +38,7 @@ public class PlayerController : MonoBehaviour
 	public float maxSlideSpeed;
 	public GameObject arm;
 	public Animator anim;
+    public GameObject PausePanel;
 
 
 
@@ -82,13 +84,22 @@ public class PlayerController : MonoBehaviour
 
 	void Update()
 	{
-		if(Input.GetKeyDown ("e") && armAttached == false){
-			armAttached = true;
-		}
-		else if (Input.GetKeyDown ("e") && armAttached == true) 
-		{
-			armAttached = false;
-		}
+        if (Input.GetKeyDown("p"))
+        {
+            pause();
+        }
+
+        if (!isPaused)
+        {
+            if (Input.GetKeyDown("e") && armAttached == false)
+            {
+                armAttached = true;
+            }
+            else if (Input.GetKeyDown("e") && armAttached == true)
+            {
+                armAttached = false;
+            }
+        }
 
 		if (armAttached) 
 		{
@@ -104,10 +115,14 @@ public class PlayerController : MonoBehaviour
 		}
 		if (normalMovement == true) 
 		{
-			if (Input.GetKey ("w") && canJump == true) {
-				rb.AddForce (jumpHeight, ForceMode2D.Impulse); // jump
-				canJump = false;
-			}
+            if (!isPaused)
+            {
+                if (Input.GetKey("w") && canJump == true)
+                {
+                    rb.AddForce(jumpHeight, ForceMode2D.Impulse); // jump
+                    canJump = false;
+                }
+            }
 		}
 	}
 
@@ -137,7 +152,7 @@ public class PlayerController : MonoBehaviour
 
 		transform.rotation = Quaternion.Euler (0, 0, 0); // stops rotation
 
-		if (normalMovement == true) {
+		if (normalMovement == true && !isPaused) {
 			if (Input.anyKey) {
 				zeroVelocity = false;
 				if (Input.GetKey ("a")) {
@@ -175,7 +190,8 @@ public class PlayerController : MonoBehaviour
 
 			transform.Translate (Vector3.right * _Velocity * Time.deltaTime);
 			Debug.Log ("Using normal movement");
-		} else {
+		} else if(!isPaused)
+        {
 			if (Input.GetKey ("d") && !wallGrabLeft && !wallGrabRight) 
 			{
 				rb.AddForce (Vector2.right, ForceMode2D.Impulse);
@@ -234,7 +250,7 @@ public class PlayerController : MonoBehaviour
 			anim.SetInteger ("State", 0);
 			armAttached = true;
 		}
-		if (other.gameObject.tag == "Wall" && isWallSliding == false) {
+		if (other.gameObject.tag == "Wall" && isWallSliding == false && !isPaused) {
 			{
 				if (isFalling == false) {
 					_Acc = 0;
@@ -266,25 +282,28 @@ public class PlayerController : MonoBehaviour
 		dir = dir.normalized;
 
 
-		/*if (other.gameObject.tag == "Wall" && Input.GetKey ("w") && isWallSliding == false) {
+        /*if (other.gameObject.tag == "Wall" && Input.GetKey ("w") && isWallSliding == false) {
 			isWallSliding = true;
 		}*/
-		if(dir.x < 0 && Input.GetKey("d") && other.transform.tag == "Wall")
-		{
-			wallGrabRight = true;
-		}
-		if(dir.x > 0 && Input.GetKey("a") && other.transform.tag == "Wall")
-		{
-			wallGrabLeft = true;
-		}
-		if (Input.GetKeyUp ("d")) 
-		{
-			wallGrabRight = false;
-		}
-		if (Input.GetKeyUp ("a")) 
-		{
-			wallGrabLeft = false;
-		}
+        if (!isPaused)
+        {
+            if (dir.x < 0 && Input.GetKey("d") && other.transform.tag == "Wall")
+            {
+                wallGrabRight = true;
+            }
+            if (dir.x > 0 && Input.GetKey("a") && other.transform.tag == "Wall")
+            {
+                wallGrabLeft = true;
+            }
+            if (Input.GetKeyUp("d"))
+            {
+                wallGrabRight = false;
+            }
+            if (Input.GetKeyUp("a"))
+            {
+                wallGrabLeft = false;
+            }
+        }
 		if (other.gameObject.tag == "Ground") {
 			isTouchingGround = true;
 			isWallSliding = false;
@@ -317,7 +336,7 @@ public class PlayerController : MonoBehaviour
 			wallGrabLeft = false;
 			wallGrabRight = false;
 			isWallJumping = true;
-			if (Input.GetKeyDown ("w")) {
+			if (Input.GetKeyDown ("w") && !isPaused) {
 				rb.AddForce (slideHeight, ForceMode2D.Impulse);
 
 			}
@@ -343,4 +362,21 @@ public class PlayerController : MonoBehaviour
 	{
 		transform.Translate (Vector3.right * runSlideSpeed * Time.deltaTime);
 	}
+
+    public void pause()
+    {
+        isPaused = !isPaused;
+         if (isPaused)
+         {
+            Time.timeScale = 0;
+            PausePanel.SetActive(true);
+            Debug.Log("Pausing game");
+         }
+         else
+         {
+            Time.timeScale = 1;
+            PausePanel.SetActive(false);
+           Debug.Log("Resuming game");
+         }
+    }
 }

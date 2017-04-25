@@ -1,61 +1,69 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class ShooterAI : MonoBehaviour
+public class DasherAI : MonoBehaviour
 {
     private int facing;
+    private float maxSpeed;
     private Rigidbody2D rigidBody;
     private int state;
     private GameObject player;
     private Transform playerT;
-    private float cooldownTimer;
     private float distFromPlayer;
+    private float cooldown;
+    private float dashTime;
     public float AggroRadius;
-    public float maxSpeed;
-    public float shootCooldown;
-    public GameObject bullet;
-    public GameObject bulletSpawn;
+    public float cooldownTime;
 
-    void Start()
+    void Start ()
     {
+        rigidBody = GetComponent<Rigidbody2D>();
         facing = 1;
-        rigidBody = gameObject.GetComponent<Rigidbody2D>();
+        maxSpeed = 3f;
         state = 0;
+        dashTime = 0.0f;
+        cooldown = 0.0f;
         player = GameObject.FindGameObjectWithTag("Player");
-        playerT = player.GetComponent<Transform>();
-        cooldownTimer = 0;
+        playerT = player.transform;
     }
-
-    void Update()
+	
+	// Update is called once per frame
+	void Update ()
     {
-        checkPlayerDist();
-
-        if (state == 1)
+        if (state == 0)
+        {
+            checkPlayerDist();
+        }
+        else if (state == 1)
         {
             facePlayer();
+            checkPlayerDist();
 
-            if(cooldownTimer <= 0)
+            if (cooldown <= 0.0f)
             {
-                shoot();
+                dash();
             }
-
-            rigidBody.velocity = new Vector2(0, 0);
         }
-        else
+
+        if(cooldown > 0.0f)
+        {
+            cooldown -= Time.deltaTime;
+        }
+
+        if(dashTime > 0.0f)
+        {
+            dashTime -= Time.deltaTime;
+        } else
         {
             rigidBody.velocity = new Vector2(facing * maxSpeed, rigidBody.velocity.y);
-        }
-
-        if (cooldownTimer > 0)
-        {
-            cooldownTimer -= Time.deltaTime;
         }
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == "PlatformEdge")
+        if(other.gameObject.tag == "PlatformEdge")
         {
             flip();
         }
@@ -63,20 +71,28 @@ public class ShooterAI : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Player")
+        if(other.gameObject.tag == "Player")
         {
             state = 2;
             player = null;
             playerT = null;
             Destroy(other.gameObject);
+			StartCoroutine ("EndGame");
         }
     }
 
-    void shoot()
+	IEnumerator EndGame(){
+		yield return new WaitForSeconds (3);
+		SceneManager.LoadScene ("Scenes/GameOver");
+	}
+
+
+    void dash()
     {
-        GameObject newBullet = Instantiate(bullet, bulletSpawn.transform) as GameObject;
-        Debug.Log("shooting a bullet");
-        cooldownTimer = shootCooldown;
+        Debug.Log("Dashing");
+        rigidBody.AddForce(new Vector2(facing * 200f * 4, 0));
+        cooldown = cooldownTime;
+        dashTime = .5f;
     }
 
     void facePlayer()
@@ -84,8 +100,7 @@ public class ShooterAI : MonoBehaviour
         if (transform.position.x < playerT.position.x && facing == -1)
         {
             flip();
-        }
-        else if (transform.position.x > playerT.position.x && facing == 1)
+        } else if (transform.position.x > playerT.position.x && facing == 1)
         {
             flip();
         }
@@ -95,11 +110,10 @@ public class ShooterAI : MonoBehaviour
     {
         distFromPlayer = Vector2.Distance(playerT.position, transform.position);
 
-        if (distFromPlayer < AggroRadius)
+        if(distFromPlayer < AggroRadius)
         {
             state = 1;
-        }
-        else
+        } else
         {
             state = 0;
         }

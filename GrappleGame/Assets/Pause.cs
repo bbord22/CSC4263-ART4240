@@ -9,7 +9,13 @@ public class Pause : MonoBehaviour {
 		gamePaused = false;
 	}
 
-	public void PauseGame(){
+	void Update(){
+		if (Input.GetKeyDown ("p")) {
+			PauseGame ();
+		}
+	}
+
+	void PauseGame(){
 		if (gamePaused == false) {
 			Time.timeScale = 0;
 			gamePaused = true;

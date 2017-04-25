@@ -337,7 +337,7 @@ public class PlayerController : MonoBehaviour
 		transform.Translate (Vector3.right * runSlideSpeed * Time.deltaTime);
 	}
 
-    void pause()
+    public void pause()
     {
         isPaused = !isPaused;
         if (isPaused)

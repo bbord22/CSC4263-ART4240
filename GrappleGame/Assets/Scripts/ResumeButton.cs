@@ -11,6 +11,6 @@ public class ResumeButton : MonoBehaviour {
 
     public void onClick()
     {
-        playerController.pause();
+        //playerController.pause();
     }
 }

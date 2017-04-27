@@ -403,4 +403,10 @@ public class PlayerController : MonoBehaviour
            Debug.Log("Resuming game");
          }
     }
+
+	void OnDisable(){
+		Time.timeScale = 1;
+		PausePanel.SetActive(false);
+		isPaused = false;
+	}
 }

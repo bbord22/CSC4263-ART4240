@@ -406,7 +406,6 @@ public class PlayerController : MonoBehaviour
 
 	void OnDisable(){
 		Time.timeScale = 1;
-		PausePanel.SetActive(false);
 		isPaused = false;
 	}
 }

@@ -23,9 +23,11 @@ public class RightWallDetector : MonoBehaviour {
 				//player._Velocity = 0;
 
 			}
-
+			if (Input.GetKey ("w") && player.isRising) {
+				player.rb.AddForce (player.slideHeight, ForceMode2D.Impulse);
+			}
 			//if (GameObject.FindGameObjectWithTag ("Arm").GetComponent<GrappleScript> ().pivotAttached == false) {
-				player.rb.AddRelativeForce (Vector2.left * player.wallJumpForce, ForceMode2D.Impulse);
+				
 			//}
 
 			Debug.Log ("Wall Slide");
@@ -51,9 +53,8 @@ public class RightWallDetector : MonoBehaviour {
 
 	void OnTriggerExit2D()
 	{
-		if (Input.GetKey ("w") && player.isRising) {
-			player.rb.AddForce (player.slideHeight, ForceMode2D.Impulse);
-		}
+		player.rb.AddRelativeForce (Vector2.left * player.wallJumpForce, ForceMode2D.Impulse);
+
 
 		player.isWallSliding = false;
 		player.isTouchingGround = false;

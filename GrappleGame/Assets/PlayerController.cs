@@ -67,8 +67,8 @@ public class PlayerController : MonoBehaviour
 	{
 		Physics.defaultSolverIterations = 10;
 		rb = gameObject.GetComponent<Rigidbody2D> ();
-		jumpHeight = new Vector3 (0f, 14f, 0f);
-		slideHeight = new Vector3 (0f, 10.5f, 0f);
+		jumpHeight = new Vector3 (0f, 14.5f, 0f);
+		slideHeight = new Vector3 (0f, 12f, 0f);
 		moveSpeed = 9f;
 		runSlideSpeed = 6f;
 		maxSlideSpeed = 2;

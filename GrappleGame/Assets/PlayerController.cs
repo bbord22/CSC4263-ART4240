@@ -10,35 +10,35 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-	private float moveSpeed;
-	private float runSlideSpeed;
-	private Vector2 dir;
-	private Vector3 jumpHeight;
-	private Vector3 slideHeight;
-	private Rigidbody2D rb;
-	private bool canJump;
-	public bool isWallJumping;
-	public bool isWallSliding;
+	public float moveSpeed;
+	public float runSlideSpeed;
+	public Vector2 dir;
+	public Vector3 jumpHeight;
+	public Vector3 slideHeight;
+	public Rigidbody2D rb;
+	public bool canJump;
+	public bool isWallJumping; //
+	public bool isWallSliding; //
 	private float oldHeight;
 	private float currentHeight;
 	private float oldX;
 	private float currentX;
-    private bool isPaused;
+    public bool isPaused;
 	public bool movingLeft;
 	public bool movingRight;
 	public bool stationaryX;
 	public bool stationary;
-	public bool isTouchingGround;
+	public bool isTouchingGround;//
 	public bool isRising = false;
 	public bool isFalling = true;
-	public bool wallGrabRight = false;
-	public bool wallGrabLeft = false;
-	private float wallJumpForce;
+	public bool wallGrabRight = false;//
+	public bool wallGrabLeft = false;//
+	public float wallJumpForce;
 	public bool armAttached = true;
 	public float maxSlideSpeed;
 	public GameObject arm;
 	public Animator anim;
-  public GameObject PausePanel;
+  	public GameObject PausePanel;
 	public bool runningRight;
 	public bool runningLeft;
 	public bool isPlaying = false;
@@ -148,7 +148,7 @@ public class PlayerController : MonoBehaviour
 	{
 
 
-		if (leftGround == true)
+		if (isTouchingGround == false)
 		{
 			normalMovement = false;
 		}
@@ -157,7 +157,7 @@ public class PlayerController : MonoBehaviour
 			normalMovement = true;
 		}
 
-		if (isFalling && isWallSliding && (wallGrabLeft || wallGrabRight))
+		if (isFalling &&  (wallGrabLeft || wallGrabRight))
 		{
 			rb.velocity = rb.velocity.normalized * maxSlideSpeed;
 		}
@@ -261,8 +261,8 @@ public class PlayerController : MonoBehaviour
 	void OnCollisionEnter2D (Collision2D other)
 	{
 		rb.gravityScale = 1;
-		isWallJumping = false;
-		if (other.gameObject.tag == "Ground") {
+		//isWallJumping = false;
+		/*if (other.gameObject.tag == "Ground") {
 			canJump = true;
 			isWallSliding = false;
 			leftGround = false;
@@ -271,8 +271,8 @@ public class PlayerController : MonoBehaviour
 			_Velocity = 0;
 			anim.SetInteger ("State", 0);
 			armAttached = true;
-		}
-		if (other.gameObject.tag == "Wall" && isWallSliding == false && !isPaused) {
+		}*/
+		/*if (other.gameObject.tag == "Wall" && isWallSliding == false && !isPaused) {
 			{
 				if (isFalling == false) {
 					_Acc = 0;
@@ -290,24 +290,25 @@ public class PlayerController : MonoBehaviour
 				if (wallGrabLeft) {
 					//GameObject.Find ("Model").transform.Translate (Vector3.right * 0.5f);
 				}
-			}
+			}*/
 			if (other.gameObject.name == "Finish Flag") {
 				other.gameObject.GetComponent<BoxCollider2D> ().enabled = false;
 				StartCoroutine ("Restart");
 			}
 		}
-	}
+
 
 	void OnCollisionStay2D (Collision2D other)
 	{
-		dir.x = other.contacts [0].point.x - other.gameObject.transform.position.x;
+		/*dir.x = other.contacts [0].point.x - other.gameObject.transform.position.x;
 		dir = dir.normalized;
 
 
         /*if (other.gameObject.tag == "Wall" && Input.GetKey ("w") && isWallSliding == false) {
 			isWallSliding = true;
 		}*/
-        if (!isPaused)
+        
+		/*if (!isPaused)
         {
             if (dir.x < 0 && Input.GetKey("d") && other.transform.tag == "Wall")
             {
@@ -325,19 +326,19 @@ public class PlayerController : MonoBehaviour
             {
                 wallGrabLeft = false;
             }
-        }
-		if (other.gameObject.tag == "Ground") {
+        }*/
+		/*if (other.gameObject.tag == "Ground") {
 			isTouchingGround = true;
 			isWallSliding = false;
 			canJump = true;
-		}
+		}*/
 	}
 
 	void OnCollisionExit2D (Collision2D other)
 	{
 
 
-		isWallSliding = false;
+		/*isWallSliding = false;
 		canJump = false;
 		isTouchingGround = false;
 		Debug.Log ("Left the " + other.gameObject.tag);
@@ -345,9 +346,9 @@ public class PlayerController : MonoBehaviour
 		dir.x = other.contacts [0].point.x - other.gameObject.transform.position.x;
 		dir.y = other.contacts [0].point.y - other.gameObject.transform.position.y;
 		dir.y = 0;
-		dir = dir.normalized;
+		dir = dir.normalized;*/
 
-		if (other.gameObject.tag == "Wall") {
+		/*if (other.gameObject.tag == "Wall") {
 			if (wallGrabRight || isTouchingGround)
 			{
 				//GameObject.Find("Model").transform.Translate(Vector3.right * 0.7f);
@@ -364,14 +365,14 @@ public class PlayerController : MonoBehaviour
 			}
 			rb.AddRelativeForce (dir * wallJumpForce, ForceMode2D.Impulse);
 			Debug.Log ("Wall Jump");
-		}
+		}*/
 
-		if (other.gameObject.tag == "Ground") {
+		/*if (other.gameObject.tag == "Ground") {
 			canJump = false;
 			isWallSliding = false;
 			leftGround = true;
 			Debug.Log ("Left Ground");
-		}
+		}*/
 	}
 
 	IEnumerator Restart ()

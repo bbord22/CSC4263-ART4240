@@ -8,23 +8,21 @@ public class BulletScript : MonoBehaviour {
     private GameObject player;
     private Transform target;
     private Rigidbody2D rb2d;
-    private Vector3 targetVector;
+    private Vector2 targetVector;
+    private Vector2 path;
+    private Vector3 position;
 
 	void Start () {
         player = GameObject.FindGameObjectWithTag("Player");
         target = player.transform;
         rb2d = GetComponent<Rigidbody2D>();
         targetVector = target.position;
+        path = (targetVector - (Vector2)transform.position).normalized;
 	}
 	
 	void Update () {
-        float step = speed * Time.deltaTime;
-        transform.position = Vector2.MoveTowards(transform.position, targetVector, step);
-
-        if (transform.position == targetVector)
-        {
-            Destroy(gameObject);
-        }
+        position = transform.position;
+        rb2d.velocity = path * speed;
 	}
 
     void OnCollisionEnter2D(Collision2D other)

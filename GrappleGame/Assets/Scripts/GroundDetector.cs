@@ -15,7 +15,7 @@ public class GroundDetector : MonoBehaviour {
 		player.canJump = true;
 		player.isWallSliding = false;
 		player.leftGround = false;
-		player._Acc = 0;
+		//player._Acc = 0;
 		player._Velocity = 0;
 		player.anim.SetInteger ("State", 0);
 		player.armAttached = true;

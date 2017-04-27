@@ -142,20 +142,21 @@ public class PlayerController : MonoBehaviour
 			}
 
 		}
+		if (isTouchingGround)
+		{
+			normalMovement = true;
+		}
+		else
+		{
+			normalMovement = false;
+		}
 	}
 
 	void FixedUpdate ()
 	{
 
 
-		if (isTouchingGround == false)
-		{
-			normalMovement = false;
-		}
-		else
-		{
-			normalMovement = true;
-		}
+
 
 		if (isFalling &&  (wallGrabLeft || wallGrabRight))
 		{

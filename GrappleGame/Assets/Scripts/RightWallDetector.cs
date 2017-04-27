@@ -24,8 +24,9 @@ public class RightWallDetector : MonoBehaviour {
 
 			}
 
+			//if (GameObject.FindGameObjectWithTag ("Arm").GetComponent<GrappleScript> ().pivotAttached == false) {
 				player.rb.AddRelativeForce (Vector2.left * player.wallJumpForce, ForceMode2D.Impulse);
-
+			//}
 
 			Debug.Log ("Wall Slide");
 		}

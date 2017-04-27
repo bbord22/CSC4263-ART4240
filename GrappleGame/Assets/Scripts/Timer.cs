@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +9,8 @@ public class Timer : MonoBehaviour
     private float timer;
     private int seconds, minutes;
     private Text text;
+    private string TotalTime;
+    private GameObject player;
 
 	void Start ()
     {
@@ -19,9 +22,25 @@ public class Timer : MonoBehaviour
 	
 	void Update ()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
+
+        if(player != null)
+        {
+            updateTime();
+        }
+        else
+        {
+            
+        }
+
+        text.text = "" + TotalTime;
+    }
+
+    void updateTime()
+    {
         timer += Time.deltaTime;
-        
-        if(timer >= 1f)
+
+        if (timer >= 1f)
         {
             seconds++;
             timer -= 1f;
@@ -33,13 +52,22 @@ public class Timer : MonoBehaviour
             seconds = 0;
         }
 
-        if(minutes == 0)
+        if (seconds < 10 && minutes < 10)
         {
-            text.text = "Time: " + seconds.ToString() + "s";
+            TotalTime = "0" + minutes.ToString() + ":0" + seconds.ToString();
+        }
+        else if (minutes < 10 && seconds >= 10)
+        {
+            TotalTime = "0" + minutes.ToString() + ":" + seconds.ToString();
+        }
+        else if (minutes >= 10 && seconds < 10)
+        {
+            TotalTime = minutes.ToString() + ":0" + seconds.ToString();
         }
         else
         {
-            text.text = "Time: " + minutes.ToString() + "m:" + seconds.ToString() + "s";
+            TotalTime = minutes.ToString() + ":" + seconds.ToString();
+
         }
     }
 }

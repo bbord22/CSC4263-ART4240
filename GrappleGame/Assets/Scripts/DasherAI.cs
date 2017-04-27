@@ -43,7 +43,7 @@ public class DasherAI : MonoBehaviour
 
 		if (isFacingLeft) 
 		{
-			anim.SetInteger ("State", 1);
+			anim.SetInteger ("State", 0);
 		}
 
 		if (isFacingRight && isDashing) 

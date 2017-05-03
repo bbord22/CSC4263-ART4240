@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
 	private float currentHeight;
 	private float oldX;
 	private float currentX;
-    public bool isPaused;
+	public bool isPaused;
 	public bool movingLeft;
 	public bool movingRight;
 	public bool stationaryX;
@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
 	public float maxSlideSpeed;
 	public GameObject arm;
 	public Animator anim;
-  	public GameObject PausePanel;
+	public GameObject PausePanel;
 	public bool runningRight;
 	public bool runningLeft;
 	public bool isPlaying = false;
@@ -63,6 +63,8 @@ public class PlayerController : MonoBehaviour
 	public bool normalMovement;
 	public bool leftGround;
 
+	public static bool countdownOver;
+
 	void Start ()
 	{
 		Physics.defaultSolverIterations = 10;
@@ -82,72 +84,59 @@ public class PlayerController : MonoBehaviour
 		oldHeight = currentHeight;
 		zeroVelocity = false;
 		arm = GameObject.FindGameObjectWithTag ("Arm");
-		anim = GameObject.FindGameObjectWithTag("Model").GetComponent<Animator> ();
-        isPaused = false;
-        PausePanel.SetActive(false);
+		anim = GameObject.FindGameObjectWithTag ("Model").GetComponent<Animator> ();
+		isPaused = false;
+		PausePanel.SetActive (false);
+		countdownOver = false;
 	}
 
-	void Update()
+	void Update ()
 	{
-        if (Input.GetKeyDown("p"))
-        {
-            pause();
-        }
-
-        if (!isPaused)
-        {
-            if (Input.GetKeyDown("e") && armAttached == false)
-            {
-                armAttached = true;
-            }
-            else if (Input.GetKeyDown("e") && armAttached == true)
-            {
-                armAttached = false;
-            }
-        }
-
-		if (armAttached)
-		{
-			arm.SetActive(true);
-			gameObject.GetComponent<HingeJoint2D>().enabled = true;
-			gameObject.GetComponent<ArmCursorFollow>().enabled = true;
+		if (Input.GetKeyDown ("p")) {
+			pause ();
 		}
-		if (!armAttached)
-		{
-			gameObject.GetComponent<HingeJoint2D>().enabled = false;
-			gameObject.GetComponent<ArmCursorFollow>().enabled = false;
-			arm.SetActive(false);
-		}
-		if (!isPaused){
-		if (normalMovement == true)
-		{
 
-                if (Input.GetKeyDown("w") && canJump == true)
-                {
-                    rb.AddForce(jumpHeight, ForceMode2D.Impulse); // jump
-                    canJump = false;
-                }
-								if((runningLeft || runningRight) && isPlaying == false){
-									GetComponent<AudioSource>().Play();
-									isPlaying = true;
-								}
-								else if (!(runningLeft ||runningRight) && isPlaying == true){
-									GetComponent<AudioSource>().Stop();
-									isPlaying = false;
-								}
-      }
-			else{
+		if (!isPaused) {
+			if (Input.GetKeyDown ("e") && armAttached == false) {
+				armAttached = true;
+			} else if (Input.GetKeyDown ("e") && armAttached == true) {
+				armAttached = false;
+			}
+		}
+
+		if (armAttached) {
+			arm.SetActive (true);
+			gameObject.GetComponent<HingeJoint2D> ().enabled = true;
+			gameObject.GetComponent<ArmCursorFollow> ().enabled = true;
+		}
+		if (!armAttached) {
+			gameObject.GetComponent<HingeJoint2D> ().enabled = false;
+			gameObject.GetComponent<ArmCursorFollow> ().enabled = false;
+			arm.SetActive (false);
+		}
+		if (!isPaused && countdownOver == true) {
+			if (normalMovement == true) {
+
+				if (Input.GetKeyDown ("w") && canJump == true) {
+					rb.AddForce (jumpHeight, ForceMode2D.Impulse); // jump
+					canJump = false;
+				}
+				if ((runningLeft || runningRight) && isPlaying == false) {
+					GetComponent<AudioSource> ().Play ();
+					isPlaying = true;
+				} else if (!(runningLeft || runningRight) && isPlaying == true) {
+					GetComponent<AudioSource> ().Stop ();
+					isPlaying = false;
+				}
+			} else {
 				isPlaying = false;
-				GetComponent<AudioSource>().Stop();
+				GetComponent<AudioSource> ().Stop ();
 			}
 
 		}
-		if (isTouchingGround)
-		{
+		if (isTouchingGround) {
 			normalMovement = true;
-		}
-		else
-		{
+		} else {
 			normalMovement = false;
 		}
 	}
@@ -158,8 +147,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-		if (isFalling &&  (wallGrabLeft || wallGrabRight))
-		{
+		if (isFalling && (wallGrabLeft || wallGrabRight)) {
 			rb.velocity = rb.velocity.normalized * maxSlideSpeed;
 		}
 
@@ -171,7 +159,7 @@ public class PlayerController : MonoBehaviour
 
 		transform.rotation = Quaternion.Euler (0, 0, 0); // stops rotation
 
-		if (normalMovement == true && !isPaused) {
+		if (normalMovement == true && !isPaused && countdownOver == true) {
 			if (Input.anyKey) {
 				zeroVelocity = false;
 				if (Input.GetKey ("a")) {
@@ -213,20 +201,17 @@ public class PlayerController : MonoBehaviour
 
 			transform.Translate (Vector3.right * _Velocity * Time.deltaTime);
 			Debug.Log ("Using normal movement");
-		} else if(!isPaused)
-        {
-			if (Input.GetKey ("d")/* && !wallGrabLeft && !wallGrabRight*/)
-			{
+		} else if (!isPaused && countdownOver == true) {
+			if (Input.GetKey ("d")/* && !wallGrabLeft && !wallGrabRight*/) {
 				rb.AddForce (Vector2.right, ForceMode2D.Impulse);
 			}
 
-			if (Input.GetKey ("a")/*  && !wallGrabLeft && !wallGrabRight*/)
-			{
+			if (Input.GetKey ("a")/*  && !wallGrabLeft && !wallGrabRight*/) {
 				rb.AddForce (Vector2.left, ForceMode2D.Impulse);
 			}
 
 			rb.velocity = Vector2.ClampMagnitude (rb.velocity, 15);
-			Debug.Log("Using alternate movement");
+			Debug.Log ("Using alternate movement");
 		}
 
 		currentHeight = gameObject.transform.position.y; // did this so the jump won't look floaty
@@ -244,13 +229,11 @@ public class PlayerController : MonoBehaviour
 			movingLeft = true;
 			movingRight = false;
 			stationaryX = false;
-		}
-		else if (currentX == oldX) { // if player is falling gravity is more
+		} else if (currentX == oldX) { // if player is falling gravity is more
 			movingLeft = false;
 			movingRight = false;
 			stationaryX = true;
-		}
-		else { // if player is jumping gravity is less
+		} else { // if player is jumping gravity is less
 			movingRight = true;
 			movingLeft = false;
 			stationaryX = false;
@@ -292,11 +275,11 @@ public class PlayerController : MonoBehaviour
 					//GameObject.Find ("Model").transform.Translate (Vector3.right * 0.5f);
 				}
 			}*/
-			if (other.gameObject.name == "Finish Flag") {
-				other.gameObject.GetComponent<BoxCollider2D> ().enabled = false;
-				StartCoroutine ("Restart");
-			}
+		if (other.gameObject.name == "Finish Flag") {
+			other.gameObject.GetComponent<BoxCollider2D> ().enabled = false;
+			StartCoroutine ("Restart");
 		}
+	}
 
 
 	void OnCollisionStay2D (Collision2D other)
@@ -387,24 +370,22 @@ public class PlayerController : MonoBehaviour
 		transform.Translate (Vector3.right * runSlideSpeed * Time.deltaTime);
 	}
 
-    public void pause()
-    {
-        isPaused = !isPaused;
-         if (isPaused)
-         {
-            Time.timeScale = 0;
-            PausePanel.SetActive(true);
-            Debug.Log("Pausing game");
-         }
-         else
-         {
-            Time.timeScale = 1;
-            PausePanel.SetActive(false);
-           Debug.Log("Resuming game");
-         }
-    }
+	public void pause ()
+	{
+		isPaused = !isPaused;
+		if (isPaused) {
+			Time.timeScale = 0;
+			PausePanel.SetActive (true);
+			Debug.Log ("Pausing game");
+		} else {
+			Time.timeScale = 1;
+			PausePanel.SetActive (false);
+			Debug.Log ("Resuming game");
+		}
+	}
 
-	void OnDisable(){
+	void OnDisable ()
+	{
 		Time.timeScale = 1;
 		isPaused = false;
 	}

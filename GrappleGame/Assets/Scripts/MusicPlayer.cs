@@ -1,8 +1,10 @@
-﻿// This script was written by Kristofer Oubre for the
-// game Flee Bee © Kristofer Oubre which is available
-// in the Apple App Store and Google Play Store. Some 
-// functions will need to be tweaked so this script 
-// can be useful in other games.
+﻿/** 
+ This script was written by Kristofer Oubre for the
+ game Flee Bee © Kristofer Oubre which is available
+ in the Apple App Store and Google Play Store. Some 
+ functions will need to be tweaked so this script 
+ can be useful in other games. Enjoy!
+*/
 
 using UnityEngine;
 using System.Collections;
@@ -26,8 +28,7 @@ public class MusicPlayer : MonoBehaviour
 			AudioBegin = true;
 		}
 	}
-	
-	// Update is called once per frame
+
 	void Update ()
 	{
 		if (SceneManager.GetActiveScene ().name == "Game" || SceneManager.GetActiveScene ().name == "GameOver") {

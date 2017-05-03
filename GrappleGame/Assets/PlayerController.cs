@@ -122,7 +122,7 @@ public class PlayerController : MonoBehaviour
 		if (!isPaused && countdownOver == true) {
 			if (normalMovement == true) {
 
-				if (Input.GetKeyDown ("w") && canJump == true) {
+				if ((Input.GetKeyDown ("w") || Input.GetKeyDown ("space")) && canJump == true) {
 					rb.AddForce (jumpHeight, ForceMode2D.Impulse); // jump
 					canJump = false;
 				}
@@ -139,19 +139,15 @@ public class PlayerController : MonoBehaviour
 			}
 
 		}
-		/*if (isTouchingGround) {
+		if (isTouchingGround) {
 			normalMovement = true;
 		} else {
 			normalMovement = false;
-		}*/
+		}
 	}
 
 	void FixedUpdate ()
 	{
-
-
-
-
 		if (isFalling && (wallGrabLeft || wallGrabRight)) {
 			rb.velocity = rb.velocity.normalized * maxSlideSpeed;
 		}
@@ -288,6 +284,10 @@ public class PlayerController : MonoBehaviour
 			touchedEnemy = true;
 			anim.SetInteger ("State", 7);
 		}
+		if (other.gameObject.tag == "Ground") {
+			isTouchingGround = true;
+			canJump = true;
+		}
 	}
 
 
@@ -320,15 +320,20 @@ public class PlayerController : MonoBehaviour
                 wallGrabLeft = false;
             }
         }*/
-		/*if (other.gameObject.tag == "Ground") {
+		if (other.gameObject.tag == "Ground") {
 			isTouchingGround = true;
 			isWallSliding = false;
 			canJump = true;
-		}*/
+		}
 	}
 
 	void OnCollisionExit2D (Collision2D other)
 	{
+		isWallSliding = false;
+		isTouchingGround = false;
+		canJump = false;
+		wallGrabLeft = false;
+		wallGrabRight = false;
 
 
 		/*isWallSliding = false;

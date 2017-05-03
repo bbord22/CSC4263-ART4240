@@ -104,6 +104,7 @@ public class DasherAI : MonoBehaviour
     {
         if(other.gameObject.tag == "Player")
         {
+			Timer.playerKilled = true;
 			PlayerPrefs.SetString ("KilledBy", "Dasher");
 			PlayerPrefs.Save ();
             state = 2;

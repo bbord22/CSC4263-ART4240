@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class GameOver : MonoBehaviour
 {
 	public Text killedBy;
+	public Text lastTime;
 
 	private GameObject shooter;
 	private GameObject dasher;
@@ -19,6 +20,7 @@ public class GameOver : MonoBehaviour
 		shooter.GetComponent<SpriteRenderer> ().enabled = false;
 		dasher.GetComponent<SpriteRenderer> ().enabled = false;
 		killedBy.text = "";
+		lastTime.text = "Time Lasted: " + PlayerPrefs.GetString ("TimeLasted", "00:00");
 		ShowKiller ();
 	}
 

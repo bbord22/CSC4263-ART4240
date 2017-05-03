@@ -13,6 +13,7 @@ public class Timer : MonoBehaviour
 	private GameObject player;
 	public static bool countdownOver;
 	public static bool stopTimer;
+	public static bool playerKilled;
 
 	void Start ()
 	{
@@ -23,6 +24,7 @@ public class Timer : MonoBehaviour
 		text.text = "00:00";
 		countdownOver = false;
 		stopTimer = false;
+		playerKilled = false;
 	}
 
 	void Update ()
@@ -35,11 +37,14 @@ public class Timer : MonoBehaviour
 		} 
 		if (stopTimer == true) {
 			stopTimer = false;
-			SaveTime ();
+			SaveCompletionTime ();
+		}
+		if (playerKilled == true) {
+			SaveKilledTime ();
 		}
 	}
 
-	void SaveTime ()
+	void SaveCompletionTime ()
 	{
 		PlayerPrefs.SetString ("LastTime", TotalTime);
 		PlayerPrefs.Save ();
@@ -49,6 +54,12 @@ public class Timer : MonoBehaviour
 		}
 		Debug.Log ("Last Time: " + PlayerPrefs.GetString ("LastTime", "00:00"));
 		Debug.Log ("Best Time: " + PlayerPrefs.GetString ("BestTime", "00:00"));
+	}
+
+	void SaveKilledTime ()
+	{
+		PlayerPrefs.SetString ("TimeLasted", TotalTime);
+		PlayerPrefs.Save ();
 	}
 
 	void updateTime ()

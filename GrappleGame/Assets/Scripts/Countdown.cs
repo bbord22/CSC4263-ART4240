@@ -11,9 +11,8 @@ using System.Collections;
 
 public class Countdown : MonoBehaviour
 {
-	public static float volume = 1;
 	public static int time;
-	public AudioClip CountSound;
+	public AudioSource countSound;
 	public Text countdown;
 
 	protected GUIStyle style = new GUIStyle ();
@@ -29,7 +28,7 @@ public class Countdown : MonoBehaviour
 	{
 		while (true) {
 			if (time != 0) {
-				AudioSource.PlayClipAtPoint (CountSound, transform.position, 1);
+				countSound.Play();
 			}
 			yield return new WaitForSeconds (1);
 			time -= 1;

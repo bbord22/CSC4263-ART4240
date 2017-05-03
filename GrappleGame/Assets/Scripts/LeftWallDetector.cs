@@ -18,11 +18,11 @@ public class LeftWallDetector : MonoBehaviour {
 		player.isWallJumping = false;
 		if (player.isWallSliding == false && player.isPaused == false) 
 		{
-			if (player.isFalling == false) {
-				//player._Acc = 0;
-				//player._Velocity = 0;
+			/*if (player.isFalling == false) {
+				player._Acc = 0;
+				player._Velocity = 0;
 
-			}
+			}*/
 			if (Input.GetKey ("w")) {
 				player.rb.AddForce (player.slideHeight, ForceMode2D.Impulse);
 			}

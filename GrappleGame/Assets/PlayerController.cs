@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour
 		Physics.defaultSolverIterations = 10;
 		rb = gameObject.GetComponent<Rigidbody2D> ();
 		jumpHeight = new Vector3 (0f, 14.5f, 0f);
-		slideHeight = new Vector3 (0f, 12f, 0f);
+		slideHeight = new Vector3 (0f, 13f, 0f);
 		moveSpeed = 9f;
 		runSlideSpeed = 6f;
 		maxSlideSpeed = 2;
@@ -202,11 +202,11 @@ public class PlayerController : MonoBehaviour
 			transform.Translate (Vector3.right * _Velocity * Time.deltaTime);
 			Debug.Log ("Using normal movement");
 		} else if (!isPaused && countdownOver == true) {
-			if (Input.GetKey ("d")/* && !wallGrabLeft && !wallGrabRight*/) {
+			if (Input.GetKey ("d") && !wallGrabLeft && !wallGrabRight) {
 				rb.AddForce (Vector2.right, ForceMode2D.Impulse);
 			}
 
-			if (Input.GetKey ("a")/*  && !wallGrabLeft && !wallGrabRight*/) {
+			if (Input.GetKey ("a")  && !wallGrabLeft && !wallGrabRight) {
 				rb.AddForce (Vector2.left, ForceMode2D.Impulse);
 			}
 

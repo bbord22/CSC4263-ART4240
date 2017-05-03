@@ -31,6 +31,7 @@ public class RightWallDetector : MonoBehaviour {
 			//}
 
 			Debug.Log ("Wall Slide");
+
 		}
 	}
 

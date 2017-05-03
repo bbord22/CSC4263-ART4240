@@ -31,17 +31,17 @@ public class AnimationScript : MonoBehaviour {
 			anime.SetInteger ("State", 4);
 		player.armAttached = true;
 
-		if (player.isTouchingGround && Input.GetKey("d") && !player.isWallSliding) 
+		if (player.isTouchingGround && (player.movingRight || Input.GetKey("d")) && !player.isWallSliding) 
 		{
 			anime.SetInteger ("State", 1);
 			player.armAttached = true;
 		}
-		if (player.isTouchingGround && Input.GetKey("a") && !player.isWallSliding) 
+		if (player.isTouchingGround && (player.movingLeft || Input.GetKey("a")) && !player.isWallSliding) 
 		{
 			anime.SetInteger ("State", 2);
 			player.armAttached = true;
 		}
-		if (player.isTouchingGround && player.stationaryX && !player.isWallSliding) 
+		if (player.isTouchingGround && player.stationaryX/* && !player.isWallSliding*/) 
 		{
 			anime.SetInteger ("State", 0);
 			player.armAttached = false;

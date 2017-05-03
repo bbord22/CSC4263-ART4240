@@ -12,10 +12,11 @@ public class GroundDetector : MonoBehaviour {
 		
 	void OnTriggerEnter2D()
 	{
+		player.normalMovement = true;
 		player.canJump = true;
 		player.isWallSliding = false;
 		player.leftGround = false;
-		//player._Acc = 0;
+		player._Acc = 0;
 		player._Velocity = 0;
 		player.anim.SetInteger ("State", 0);
 		player.armAttached = true;
@@ -31,6 +32,7 @@ public class GroundDetector : MonoBehaviour {
 
 	void OnTriggerExit2D()
 	{
+		player.normalMovement = false;
 		player.isWallSliding = false;
 		player.canJump = false;
 		player.isTouchingGround = false;

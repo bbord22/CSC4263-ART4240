@@ -134,11 +134,11 @@ public class PlayerController : MonoBehaviour
 			}
 
 		}
-		if (isTouchingGround) {
+		/*if (isTouchingGround) {
 			normalMovement = true;
 		} else {
 			normalMovement = false;
-		}
+		}*/
 	}
 
 	void FixedUpdate ()

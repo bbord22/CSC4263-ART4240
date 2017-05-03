@@ -92,6 +92,8 @@ public class ShooterAI : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
+			PlayerPrefs.SetString ("KilledBy", "Shooter");
+			PlayerPrefs.Save ();
             gameObject.SendMessage("PlayerDied");
             Destroy(other.gameObject);
 			StartCoroutine ("EndGame");

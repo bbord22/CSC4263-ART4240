@@ -102,7 +102,7 @@ public class ShooterAI : MonoBehaviour
     }
 
 	IEnumerator EndGame(){
-		yield return new WaitForSeconds (3);
+		yield return new WaitForSeconds (1);
 		SceneManager.LoadScene ("Scenes/GameOver");
 	}
 

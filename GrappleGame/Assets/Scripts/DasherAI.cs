@@ -20,20 +20,21 @@ public class DasherAI : MonoBehaviour
     public float AggroRadius;
     public float cooldownTime;
 	public Animator anim;
+	public Animator anime;
 
     void Start ()
-    {
-        rigidBody = GetComponent<Rigidbody2D>();
-        facing = 1;
-        maxSpeed = 3f;
-        state = 0;
-        dashTime = 0.0f;
-        cooldown = 0.0f;
-        player = GameObject.FindGameObjectWithTag("Player");
-        playerT = player.transform;
+	{
+		rigidBody = GetComponent<Rigidbody2D> ();
+		facing = 1;
+		maxSpeed = 3f;
+		state = 0;
+		dashTime = 0.0f;
+		cooldown = 0.0f;
+		player = GameObject.FindGameObjectWithTag ("Player");
+		playerT = player.transform;
 		anim = this.GetComponent<Animator> ();
-    }
-
+		anime = GameObject.FindGameObjectWithTag ("Model").GetComponent<Animator> ();
+	}
 	void FixedUpdate()
 	{
 		if (isFacingRight) 
@@ -110,13 +111,13 @@ public class DasherAI : MonoBehaviour
             state = 2;
             player = null;
             playerT = null;
-            Destroy(other.gameObject);
+			Destroy (other.gameObject);
 			StartCoroutine ("EndGame");
         }
     }
 
 	IEnumerator EndGame(){
-		yield return new WaitForSeconds (3);
+		yield return new WaitForSeconds (1);
 		SceneManager.LoadScene ("Scenes/GameOver");
 	}
 

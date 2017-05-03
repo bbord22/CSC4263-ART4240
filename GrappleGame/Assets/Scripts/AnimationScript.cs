@@ -22,7 +22,9 @@ public class AnimationScript : MonoBehaviour {
 		} else if ((Input.GetKey ("d") || player.wallGrabLeft) && player.arm.transform.position.z != 0) {
 			player.arm.transform.Translate (Vector3.forward);
 		}*/
-
+		if (player.touchedEnemy) {
+			anime.SetInteger ("State", 7);
+		}
 		if (player.isTouchingGround == false && !player.isWallSliding || player.isTouchingGround == false && !player.isWallSliding) {
 			anime.SetInteger ("State", 3);
 			player.armAttached = true;

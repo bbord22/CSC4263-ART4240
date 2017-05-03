@@ -12,62 +12,64 @@ public class RightWallDetector : MonoBehaviour {
 	}
 
 
-	void OnTriggerEnter2D()
+	void OnTriggerEnter2D(Collider2D other)
 	{
-		player.rb.gravityScale = 1;
-		player.isWallJumping = false;
-		if (player.isWallSliding == false && player.isPaused == false) 
-		{
-			if (player.isFalling == false) {
-				//player._Acc = 0;
-				//player._Velocity = 0;
+		if(other.tag != "Enemy"){
+			player.rb.gravityScale = 1;
+			player.isWallJumping = false;
+			if (player.isWallSliding == false && player.isPaused == false) {
+				if (player.isFalling == false) {
+					//player._Acc = 0;
+					//player._Velocity = 0;
 
-			}
-			if (Input.GetKey ("w") && player.isRising) {
-				player.rb.AddForce (player.slideHeight, ForceMode2D.Impulse);
-			}
-			//if (GameObject.FindGameObjectWithTag ("Arm").GetComponent<GrappleScript> ().pivotAttached == false) {
+				}
+				if (Input.GetKey ("w") && player.isRising) {
+					player.rb.AddForce (player.slideHeight, ForceMode2D.Impulse);
+				}
+				//if (GameObject.FindGameObjectWithTag ("Arm").GetComponent<GrappleScript> ().pivotAttached == false) {
 				
-			//}
+				//}
 
-			Debug.Log ("Wall Slide");
+				Debug.Log ("Wall Slide");
 
+			}}
+	}
+
+	void OnTriggerStay2D(Collider2D other)
+	{
+		if (other.tag != "Enemy") {
+			player.isWallSliding = true;
+			player.canJump = false;
+			if (player.isPaused == false) {
+				if (Input.GetKey ("d")) {
+					player.wallGrabRight = true;
+				}
+				if (Input.GetKeyUp ("d")) {
+					player.wallGrabRight = false;
+				}
+			}
 		}
 	}
 
-	void OnTriggerStay2D()
+	void OnTriggerExit2D(Collider2D other)
 	{
-		player.isWallSliding = true;
-		player.canJump = false;
-		if (player.isPaused == false) 
-		{
-			if (Input.GetKey ("d")) 
-			{
-				player.wallGrabRight = true;
+		if (other.tag != "Enemy") {
+			player.rb.AddRelativeForce (Vector2.left * player.wallJumpForce, ForceMode2D.Impulse);
+
+
+			player.isWallSliding = false;
+			player.isTouchingGround = false;
+
+			player.wallGrabLeft = false;
+			player.wallGrabRight = false;
+			player.isWallJumping = true;
+			if (Input.GetKeyDown ("w") && player.isPaused == false) {
+				player.rb.AddForce (player.slideHeight, ForceMode2D.Impulse);
+
 			}
-			if (Input.GetKeyUp ("d")) 
-			{
-				player.wallGrabRight = false;
-			}
+		
+
+			Debug.Log ("Wall Jump");
 		}
-	}
-
-	void OnTriggerExit2D()
-	{
-		player.rb.AddRelativeForce (Vector2.left * player.wallJumpForce, ForceMode2D.Impulse);
-
-
-		player.isWallSliding = false;
-		player.isTouchingGround = false;
-
-		player.wallGrabLeft = false;
-		player.wallGrabRight = false;
-		player.isWallJumping = true;
-		if (Input.GetKeyDown ("w") && player.isPaused == false) {
-			player.rb.AddForce (player.slideHeight, ForceMode2D.Impulse);
-
-		}
-
-		Debug.Log ("Wall Jump");
 	}
 }

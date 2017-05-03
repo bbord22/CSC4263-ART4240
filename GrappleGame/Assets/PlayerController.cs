@@ -65,6 +65,10 @@ public class PlayerController : MonoBehaviour
 
 	public static bool countdownOver;
 
+	public bool touchedEnemy;
+
+	public Animator anime;
+
 	void Start ()
 	{
 		Physics.defaultSolverIterations = 10;
@@ -88,6 +92,7 @@ public class PlayerController : MonoBehaviour
 		isPaused = false;
 		PausePanel.SetActive (false);
 		countdownOver = false;
+		touchedEnemy = false;
 	}
 
 	void Update ()
@@ -278,6 +283,10 @@ public class PlayerController : MonoBehaviour
 		if (other.gameObject.name == "Finish Flag") {
 			other.gameObject.GetComponent<BoxCollider2D> ().enabled = false;
 			StartCoroutine ("Restart");
+		}
+		if (other.gameObject.tag == "Enemy") {
+			touchedEnemy = true;
+			anim.SetInteger ("State", 7);
 		}
 	}
 

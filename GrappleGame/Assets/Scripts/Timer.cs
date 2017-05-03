@@ -6,35 +6,52 @@ using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
-    private float timer;
-    private int seconds, minutes;
-    private Text text;
-    private string TotalTime;
-    private GameObject player;
+	private float timer;
+	private int seconds, minutes;
+	private Text text;
+	private string TotalTime;
+	private GameObject player;
 	public static bool countdownOver;
+	public static bool stopTimer;
 
 	void Start ()
-    {
-        timer = 0.0f;
-        seconds = 0;
-        minutes = 0;
-        text = GetComponent<Text>();
+	{
+		timer = 0.0f;
+		seconds = 0;
+		minutes = 0;
+		text = GetComponent<Text> ();
 		text.text = "00:00";
 		countdownOver = false;
+		stopTimer = false;
 	}
-	
+
 	void Update ()
-    {
-        player = GameObject.FindGameObjectWithTag("Player");
+	{
+		player = GameObject.FindGameObjectWithTag ("Player");
 
-		if(player != null && countdownOver == true)
-        {
-            updateTime();
+		if (player != null && countdownOver == true && stopTimer == false) {
+			updateTime ();
 			text.text = "" + TotalTime;
-        }
-    }
+		} 
+		if (stopTimer == true) {
+			stopTimer = false;
+			SaveTime ();
+		}
+	}
 
-    void updateTime()
+	void SaveTime ()
+	{
+		PlayerPrefs.SetString ("LastTime", TotalTime);
+		PlayerPrefs.Save ();
+		if (TotalTime.CompareTo(PlayerPrefs.GetString ("BestTime", "00:00")) == 1) {
+			PlayerPrefs.SetString("BestTime", TotalTime);
+			PlayerPrefs.Save ();
+		}
+		Debug.Log ("Last Time: " + PlayerPrefs.GetString ("LastTime", "00:00"));
+		Debug.Log ("Best Time: " + PlayerPrefs.GetString ("BestTime", "00:00"));
+	}
+
+	void updateTime ()
 	{
 		timer += Time.deltaTime;
 

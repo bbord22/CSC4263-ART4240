@@ -35,6 +35,8 @@ public class DoorOpenScript : MonoBehaviour {
 
 	void OnTriggerEnter2D()
 	{
+		Timer.stopTimer = true;
+		Debug.Log ("Timer Stopped");
 		UnityEngine.SceneManagement.SceneManager.LoadSceneAsync ("End", UnityEngine.SceneManagement.LoadSceneMode.Single);
 	}
 }

@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: df6d59111637347959186aa7fe69e3c5
+timeCreated: 1493794929
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Clobot Personal Use
+  fontNames:
+  - Clobot Personal Use
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

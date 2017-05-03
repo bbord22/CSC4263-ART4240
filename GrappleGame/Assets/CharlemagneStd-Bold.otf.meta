@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: ffa8151c28acb4e1382d5be6042ff34c
+timeCreated: 1493795243
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Charlemagne Std
+  fontNames:
+  - Charlemagne Std
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 684c3875940914965855425281ea8249, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
